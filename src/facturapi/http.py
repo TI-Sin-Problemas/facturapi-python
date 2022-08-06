@@ -1,12 +1,12 @@
 """HTTP Base Client"""
-from abc import ABC, abstractmethod, property
-import base64
+from abc import ABC, abstractmethod
+from requests import Session
 
 from .exceptions import FacturapiException
 
 
 class BaseClient(ABC):
-    """BaseClient class to be extended by specific clients"""
+    """BaseClient class to be inherited by specific clients"""
 
     BASE_URL = "https://www.facturapi.io/"
 
@@ -22,17 +22,20 @@ class BaseClient(ABC):
         """
 
     def __init__(self, facturapi_key: str, api_version="v2") -> None:
-        key_bytes = f"{facturapi_key}:".encode("ascii")
-        b64_bytes = base64.b64encode(key_bytes)
-        self.facturapi_key = b64_bytes.decode("ascii")
+        self.facturapi_key = facturapi_key
         self.api_version = api_version
+        self.last_status = None
 
-    def __get_endpoint(self) -> str:
+        self.session = Session()
+        self.session.auth = (self.facturapi_key, "")
+        self.session.headers.update({"Content-Type": "application/json"})
+
+    def _get_endpoint(self) -> str:
         """Returns specific endpoint set by API clients"""
 
         return self.endpoint
 
-    def __get_api_version(self) -> str:
+    def _get_api_version(self) -> str:
         """Returns API version that is set in specific API clients.
         All clients that inherit BaseClient should set api_version to the version that the client
         is developed for (e.g.: the customers v1 client sets the value to 'v1')
@@ -47,17 +50,37 @@ class BaseClient(ABC):
             raise FacturapiException("api_version must be defined")
         return self.api_version
 
-    def get_request_url(self, params: list = None, query: list = None) -> str:
+    def _get_request_url(self, path_params: list = None) -> str:
         """Creates the URL to be used for the API request
 
         Args:
-            params (list, optional): List of url params. Defaults to None.
-            query (list, optional): List of query params. Defaults to None.
+            path_params (list, optional): List of path parameters. Defaults to None.
 
         Returns:
             str: URL for the API request
         """
-        version = self.__get_api_version()
-        param_string = "/".join(params) if params else ""
-        quey_string = "&".join(query) if query else ""
-        return f"{self.BASE_URL}{version}/{self.__get_endpoint()}/{param_string}?{quey_string}"
+        version = self._get_api_version()
+        param_string = "/".join(path_params) if path_params else ""
+        return f"{self.BASE_URL}{version}/{self._get_endpoint()}/{param_string}"
+
+    def _execute_get_request(self, url: str, params: dict = None) -> dict:
+        """Executes a GET request to url
+
+        Args:
+            url (str): URL for the request
+            params (dict, optional): Dictionary object of aditional query params . Defaults to None.
+
+        Raises:
+            FacturapiException
+
+        Returns:
+            dict: Respose data as dict
+        """
+        try:
+            response = self.session.get(url, params=params)
+        except Exception as error:
+            raise FacturapiException(f"Requests error: {error}") from error
+
+        self.last_status = response.status_code
+
+        return response.json()
