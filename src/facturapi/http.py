@@ -74,10 +74,32 @@ class BaseClient(ABC):
             FacturapiException
 
         Returns:
-            dict: Respose data as dict
+            dict: Respose body
         """
         try:
             response = self.session.get(url, params=params)
+        except Exception as error:
+            raise FacturapiException(f"Requests error: {error}") from error
+
+        self.last_status = response.status_code
+
+        return response.json()
+
+    def _execute_post_request(self, url: str, data: dict) -> dict:
+        """Executes a POST request to url
+
+        Args:
+            url (str): URL for the request
+            data (dict): Data to send as body
+
+        Raises:
+            FacturapiException
+
+        Returns:
+            dict: Response body
+        """
+        try:
+            response = self.session.post(url, json=data)
         except Exception as error:
             raise FacturapiException(f"Requests error: {error}") from error
 
