@@ -1,11 +1,12 @@
 """Customers endpoint unit tests"""
-import unittest
+from datetime import datetime
+from unittest import TestCase
 import settings
 
 from src.facturapi import Facturapi
 
 
-class FacturapiTestCase(unittest.TestCase):
+class FacturapiTestCase(TestCase):
     """Base Facturapi Test Case"""
 
     api = Facturapi(settings.FACTURAPI_KEY)
@@ -19,7 +20,7 @@ class TestCustomersEndopint(FacturapiTestCase):
         self.endpoint = self.api.customers
 
     def test_create_customer(self):
-        """Create customer Test Case"""
+        """Create customer"""
         address = {"zip": "01000"}
         customer = {
             "legal_name": "Publico General",
@@ -32,4 +33,39 @@ class TestCustomersEndopint(FacturapiTestCase):
         status = self.endpoint.last_status
 
         self.assertIn("id", result)
-        self.assertIn(status, [200, 201])
+        self.assertIn(status, [self.endpoint.STATUS_CREATED, self.endpoint.STATUS_OK])
+
+    def test_get_all_customers(self):
+        """Get all customers"""
+        result = self.endpoint.all()
+        status = self.endpoint.last_status
+
+        self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_search_customers(self):
+        """Search customers"""
+        result = self.endpoint.all(search="Publico")
+        status = self.endpoint.last_status
+
+        self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_get_customers_created_last_year(self):
+        """Get all customers created last year"""
+        today = datetime.today()
+        last_january = today.replace(year=today.year - 1, month=1, day=1)
+        last_december = today.replace(year=today.year - 1, month=12, day=31)
+        result = self.endpoint.all(start_date=last_january, end_date=last_december)
+        status = self.endpoint.last_status
+
+        self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_get_customers_first_page(self):
+        """Get first page of customers limited by 5"""
+        result = self.endpoint.all(page=1, limit=5)
+        status = self.endpoint.last_status
+
+        self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
