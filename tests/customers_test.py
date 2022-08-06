@@ -69,3 +69,13 @@ class TestCustomersEndopint(FacturapiTestCase):
 
         self.assertIn("data", result)
         self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_get_first_customer(self):
+        """Get details of first customer in list"""
+        data = self.endpoint.all()["data"]
+        customer_id = data[0]["id"]
+        result = self.endpoint.retrieve(customer_id)
+        status = self.endpoint.last_status
+
+        self.assertIn("id", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
