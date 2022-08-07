@@ -64,7 +64,7 @@ class CustomersClient(BaseClient):
         return self._execute_get_request(url, params)
 
     def retrieve(self, customer_id: str) -> dict:
-        """Retrieves a signle customer object
+        """Retrieves a single customer object
 
         Args:
             customer_id (str): ID of the customer to retrieve
@@ -74,3 +74,16 @@ class CustomersClient(BaseClient):
         """
         url = self._get_request_url([customer_id])
         return self._execute_get_request(url)
+
+    def update(self, customer_id: str, data: dict) -> str:
+        """Updates a customer object
+
+        Args:
+            customer_id (str): IF of the customer to update
+            data (dict): Customer's new data
+
+        Returns:
+            str: Customer object
+        """
+        url = self._get_request_url([customer_id])
+        return self._execute_put_request(url, data)

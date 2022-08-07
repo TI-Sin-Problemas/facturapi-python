@@ -1,15 +1,34 @@
 """Customers endpoint unit tests"""
 from datetime import datetime
+from random import choice, randint
+from string import ascii_lowercase
+from typing import NamedTuple
 from unittest import TestCase
-import settings
 
 from src.facturapi import Facturapi
+
+import settings
 
 
 class FacturapiTestCase(TestCase):
     """Base Facturapi Test Case"""
 
     api = Facturapi(settings.FACTURAPI_KEY)
+
+
+class MockAddress(NamedTuple):
+    """Mock address generator"""
+
+    zip: str = "01000"
+
+
+class MockCustomer(NamedTuple):
+    """Mock customer generator"""
+
+    legal_name: str = "Publico General"
+    tax_id: str = "XAXX010101000"
+    tax_system: str = "601"
+    address: dict = MockAddress()._asdict()
 
 
 class TestCustomersEndopint(FacturapiTestCase):
@@ -21,13 +40,7 @@ class TestCustomersEndopint(FacturapiTestCase):
 
     def test_create_customer(self):
         """Create customer"""
-        address = {"zip": "01000"}
-        customer = {
-            "legal_name": "Publico General",
-            "tax_id": "XAXX010101000",
-            "tax_system": "601",
-            "address": address,
-        }
+        customer = MockCustomer()._asdict()
 
         result = self.endpoint.create(customer)
         status = self.endpoint.last_status
@@ -78,4 +91,18 @@ class TestCustomersEndopint(FacturapiTestCase):
         status = self.endpoint.last_status
 
         self.assertIn("id", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_update_customer(self):
+        """Update customer"""
+        mock_customer = MockCustomer()
+        customer_id = self.endpoint.all(search=mock_customer.tax_id)["data"][0]["id"]
+        username = "".join(choice(ascii_lowercase) for i in range(randint(5, 15)))
+        fake_email = f"{username}@example.com"
+        modified_data = {"email": fake_email, **mock_customer._asdict()}
+
+        result = self.endpoint.update(customer_id, modified_data)
+        status = self.endpoint.last_status
+
+        self.assertEqual(result["email"], fake_email)
         self.assertEqual(status, self.endpoint.STATUS_OK)

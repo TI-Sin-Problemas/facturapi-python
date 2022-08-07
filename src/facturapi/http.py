@@ -107,3 +107,25 @@ class BaseClient(ABC):
         self.last_status = response.status_code
 
         return response.json()
+
+    def _execute_put_request(self, url: str, data: dict) -> dict:
+        """Executes a PUT request to url
+
+        Args:
+            url (str): URL for the request
+            data (dict): Data to update
+
+        Raises:
+            FacturapiException
+
+        Returns:
+            dict: Updated object
+        """
+        try:
+            response = self.session.put(url, json=data)
+        except Exception as error:
+            raise FacturapiException(f"Requests error: {error}") from error
+
+        self.last_status = response.status_code
+
+        return response.json()
