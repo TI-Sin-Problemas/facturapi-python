@@ -3,17 +3,8 @@ from datetime import datetime
 from random import choice, randint
 from string import ascii_lowercase
 from typing import NamedTuple
-from unittest import TestCase
 
-from src.facturapi import Facturapi
-
-import settings
-
-
-class FacturapiTestCase(TestCase):
-    """Base Facturapi Test Case"""
-
-    api = Facturapi(settings.FACTURAPI_KEY)
+from tests.testcase import FacturapiTestCase
 
 
 class MockAddress(NamedTuple):
@@ -31,7 +22,7 @@ class MockCustomer(NamedTuple):
     address: dict = MockAddress()._asdict()
 
 
-class TestCustomersEndopint(FacturapiTestCase):
+class TestCustomersEndpoint(FacturapiTestCase):
     """Customers endpoint Test Cases"""
 
     mock_customer = MockCustomer()

@@ -9,7 +9,7 @@ class CustomersClient(BaseClient):
 
     endpoint = "customers"
 
-    def create(self, data: dict):
+    def create(self, data: dict) -> dict:
         """Creates a new customer in your organization.
 
         Args:
