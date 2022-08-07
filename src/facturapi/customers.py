@@ -96,3 +96,15 @@ class CustomersClient(BaseClient):
         """
         url = self._get_request_url([customer_id])
         return self._execute_request("DELETE", url)
+
+    def validate(self, customer_id: str) -> dict:
+        """Validate customer's fiscal information
+
+        Args:
+            customer_id (str): ID of the customer to validate
+
+        Returns:
+            dict: JSON validation response
+        """
+        url = self._get_request_url([customer_id, "tax-info-validation"])
+        return self._execute_request("GET", url)

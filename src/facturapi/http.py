@@ -14,6 +14,7 @@ class BaseClient(ABC):
     STATUS_CREATED = 201
     STATUS_BAD_REQUEST = 400
     STATUS_NOT_FOUND = 404
+    STATUS_CONFLICT = 409
 
     @property
     @abstractmethod
