@@ -34,13 +34,15 @@ class MockCustomer(NamedTuple):
 class TestCustomersEndopint(FacturapiTestCase):
     """Customers endpoint Test Cases"""
 
+    mock_customer = MockCustomer()
+
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName)
         self.endpoint = self.api.customers
 
     def test_create_customer(self):
         """Create customer"""
-        customer = MockCustomer()._asdict()
+        customer = self.mock_customer._asdict()
 
         result = self.endpoint.create(customer)
         status = self.endpoint.last_status
@@ -95,7 +97,7 @@ class TestCustomersEndopint(FacturapiTestCase):
 
     def test_update_customer(self):
         """Update customer"""
-        mock_customer = MockCustomer()
+        mock_customer = self.mock_customer
         customer_id = self.endpoint.all(search=mock_customer.tax_id)["data"][0]["id"]
         username = "".join(choice(ascii_lowercase) for i in range(randint(5, 15)))
         fake_email = f"{username}@example.com"
@@ -105,4 +107,15 @@ class TestCustomersEndopint(FacturapiTestCase):
         status = self.endpoint.last_status
 
         self.assertEqual(result["email"], fake_email)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_delete_customer(self):
+        """Delete customer"""
+        mock_customer = self.mock_customer
+        customer_id = self.endpoint.all(search=mock_customer.tax_id)["data"][0]["id"]
+
+        result = self.endpoint.delete(customer_id)
+        status = self.endpoint.last_status
+
+        self.assertIn("id", result)
         self.assertEqual(status, self.endpoint.STATUS_OK)

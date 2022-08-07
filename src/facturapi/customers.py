@@ -72,11 +72,11 @@ class CustomersClient(BaseClient):
         url = self._get_request_url([customer_id])
         return self._execute_request("GET", url)
 
-    def update(self, customer_id: str, data: dict) -> str:
+    def update(self, customer_id: str, data: dict) -> dict:
         """Updates a customer object
 
         Args:
-            customer_id (str): IF of the customer to update
+            customer_id (str): ID of the customer to update
             data (dict): Customer's new data
 
         Returns:
@@ -84,3 +84,15 @@ class CustomersClient(BaseClient):
         """
         url = self._get_request_url([customer_id])
         return self._execute_request("PUT", url, json_data=data)
+
+    def delete(self, customer_id: str) -> dict:
+        """Delete a customer from your organization
+
+        Args:
+            customer_id (str): ID of the customer to delete
+
+        Returns:
+            dict: Deleted customer object
+        """
+        url = self._get_request_url([customer_id])
+        return self._execute_request("DELETE", url)
