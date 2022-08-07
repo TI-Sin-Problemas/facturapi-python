@@ -9,9 +9,6 @@ class CustomersClient(BaseClient):
 
     endpoint = "customers"
 
-    def __init__(self, facturapi_key: str, api_version="v2") -> None:
-        super().__init__(facturapi_key, api_version)
-
     def create(self, data: dict):
         """Creates a new customer in your organization.
 
@@ -22,7 +19,7 @@ class CustomersClient(BaseClient):
             dict: Created customer object
         """
         url = self._get_request_url()
-        return self._execute_post_request(url, data)
+        return self._execute_request("POST", url, json_data=data)
 
     def all(
         self,
@@ -61,7 +58,7 @@ class CustomersClient(BaseClient):
             params.update({"limit": limit})
 
         url = self._get_request_url()
-        return self._execute_get_request(url, params)
+        return self._execute_request("GET", url, params)
 
     def retrieve(self, customer_id: str) -> dict:
         """Retrieves a single customer object
@@ -73,7 +70,7 @@ class CustomersClient(BaseClient):
             dict: Customer object
         """
         url = self._get_request_url([customer_id])
-        return self._execute_get_request(url)
+        return self._execute_request("GET", url)
 
     def update(self, customer_id: str, data: dict) -> str:
         """Updates a customer object
@@ -86,4 +83,4 @@ class CustomersClient(BaseClient):
             str: Customer object
         """
         url = self._get_request_url([customer_id])
-        return self._execute_put_request(url, data)
+        return self._execute_request("PUT", url, json_data=data)

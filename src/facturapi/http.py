@@ -64,68 +64,36 @@ class BaseClient(ABC):
         param_string = "/".join(path_params) if path_params else ""
         return f"{self.BASE_URL}{version}/{self._get_endpoint()}/{param_string}"
 
-    def _execute_get_request(self, url: str, params: dict = None) -> dict:
-        """Executes a GET request to url
+    def _execute_request(
+        self, method: str, url: str, query_params: dict = None, json_data: dict = None
+    ) -> dict:
+        """Executes a HTTP request
 
         Args:
+            method (str): HTTP method. GET, POST, PUT or DELETE
             url (str): URL for the request
-            params (dict, optional): Dictionary object of aditional query params . Defaults to None.
-
-        Raises:
-            FacturapiException
+            query_params (dict, optional): Dictionary object of additional query. Defaults to None.
+            json_data (dict, optional): For POST and PUT requests. Defaults to None.
 
         Returns:
-            dict: Respose body
+            dict: API response
         """
+        method_switch = {
+            "GET": (self.session.get, {"params": query_params}),
+            "POST": (self.session.post, {"json": json_data}),
+            "PUT": (self.session.put, {"json": json_data}),
+            "DELETE": (self.session.delete, {}),
+        }
+
+        request = method_switch.get(method.upper(), None)
+
+        if not request:
+            raise FacturapiException(f"Method {method} not defined")
+
         try:
-            response = self.session.get(url, params=params)
+            response = request[0](url, **request[1])
         except Exception as error:
-            raise FacturapiException(f"Requests error: {error}") from error
+            raise FacturapiException(f"Request error: {error}") from error
 
         self.last_status = response.status_code
-
-        return response.json()
-
-    def _execute_post_request(self, url: str, data: dict) -> dict:
-        """Executes a POST request to url
-
-        Args:
-            url (str): URL for the request
-            data (dict): Data to send as body
-
-        Raises:
-            FacturapiException
-
-        Returns:
-            dict: Response body
-        """
-        try:
-            response = self.session.post(url, json=data)
-        except Exception as error:
-            raise FacturapiException(f"Requests error: {error}") from error
-
-        self.last_status = response.status_code
-
-        return response.json()
-
-    def _execute_put_request(self, url: str, data: dict) -> dict:
-        """Executes a PUT request to url
-
-        Args:
-            url (str): URL for the request
-            data (dict): Data to update
-
-        Raises:
-            FacturapiException
-
-        Returns:
-            dict: Updated object
-        """
-        try:
-            response = self.session.put(url, json=data)
-        except Exception as error:
-            raise FacturapiException(f"Requests error: {error}") from error
-
-        self.last_status = response.status_code
-
         return response.json()
