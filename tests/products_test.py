@@ -28,3 +28,27 @@ class TestProductsEndpoint(FacturapiTestCase):
 
         self.assertIn("id", result)
         self.assertIn(status, [self.endpoint.STATUS_CREATED, self.endpoint.STATUS_OK])
+
+    def test_get_all_products(self):
+        """Get all products"""
+        result = self.endpoint.all()
+        status = self.endpoint.last_status
+
+        self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_search_products(self):
+        """Search products"""
+        result = self.endpoint.all(search=self.product.description)
+        status = self.endpoint.last_status
+
+        self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_get_limited_products_by_page(self):
+        """Get first page of products limited by 5"""
+        result = self.endpoint.all(page=1, limit=5)
+        status = self.endpoint.last_status
+
+        self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
