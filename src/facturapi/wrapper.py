@@ -1,6 +1,7 @@
 """Facturapi API Client"""
 
 from .customers import CustomersClient
+from .products import ProductsClient
 
 
 class Facturapi:
@@ -10,3 +11,4 @@ class Facturapi:
 
     def __init__(self, facturapi_key: str) -> None:
         self.customers = CustomersClient(facturapi_key)
+        self.products = ProductsClient(facturapi_key)
