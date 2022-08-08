@@ -1,5 +1,4 @@
 """Products API endpoint"""
-from math import prod
 from .http import BaseClient
 
 
