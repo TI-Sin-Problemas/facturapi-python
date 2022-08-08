@@ -1,22 +1,15 @@
 """Products endpoint unit tests"""
 from random import choice, randint
 from string import ascii_lowercase
-from typing import NamedTuple
+
+from tests.mocks import MockProduct
 from tests.testcase import FacturapiTestCase
-
-
-class MockProduct(NamedTuple):
-    """Mock product class"""
-
-    description: str
-    product_key: str
-    price: float
 
 
 class TestProductsEndpoint(FacturapiTestCase):
     """Products endpoint Test Cases"""
 
-    product = MockProduct("Ukulele", "60131324", 345.6)
+    product = MockProduct()
 
     def __init__(self, methodName: str = ...) -> None:
         super().__init__(methodName)

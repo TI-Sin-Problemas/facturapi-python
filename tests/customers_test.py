@@ -2,24 +2,9 @@
 from datetime import datetime
 from random import choice, randint
 from string import ascii_lowercase
-from typing import NamedTuple
 
+from tests.mocks import MockCustomer
 from tests.testcase import FacturapiTestCase
-
-
-class MockAddress(NamedTuple):
-    """Mock address generator"""
-
-    zip: str = "01000"
-
-
-class MockCustomer(NamedTuple):
-    """Mock customer generator"""
-
-    legal_name: str = "Publico General"
-    tax_id: str = "XAXX010101000"
-    tax_system: str = "601"
-    address: dict = MockAddress()._asdict()
 
 
 class TestCustomersEndpoint(FacturapiTestCase):
