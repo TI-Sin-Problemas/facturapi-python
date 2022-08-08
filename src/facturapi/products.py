@@ -55,3 +55,16 @@ class ProductsClient(BaseClient):
         """
         url = self._get_request_url([product_id])
         return self._execute_request("GET", url)
+
+    def update(self, product_id: str, data: dict) -> dict:
+        """Updates an existing product information
+
+        Args:
+            product_id (str): ID of the product to update
+            data (dict): Product's new data to
+
+        Returns:
+            dict: Updated product object
+        """
+        url = self._get_request_url([product_id])
+        return self._execute_request("PUT", url, json_data=data)
