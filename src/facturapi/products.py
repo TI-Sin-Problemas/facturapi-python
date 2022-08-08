@@ -20,10 +20,12 @@ class ProductsClient(BaseClient):
         return self._execute_request("POST", url, json_data=data)
 
     def all(self, search: str = None, page: int = None, limit: int = None) -> dict:
-        """Returns a paginated list of all products of an organization or search by parameters recieved
+        """Returns a paginated list of all products of an organization or search by parameters
+        recieved
 
         Args:
-            search (str, optional): String to search in product description or SKU. Defaults to None.
+            search (str, optional): String to search in product description or SKU.
+            Defaults to None.
             page (int, optional): Page of the result list. Defaults to None.
             limit (int, optional): Number of maximum quantity of results. Defaults to None.
 
@@ -41,3 +43,15 @@ class ProductsClient(BaseClient):
 
         url = self._get_request_url()
         return self._execute_request("GET", url, params)
+
+    def retrieve(self, product_id: str) -> dict:
+        """Returns a single product object
+
+        Args:
+            product_def retrieve(self, product_id (str): Product ID
+
+        Returns:
+            dict: _description_
+        """
+        url = self._get_request_url([product_id])
+        return self._execute_request("GET", url)
