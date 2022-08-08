@@ -1,4 +1,5 @@
 """Products API endpoint"""
+from math import prod
 from .http import BaseClient
 
 
@@ -68,3 +69,15 @@ class ProductsClient(BaseClient):
         """
         url = self._get_request_url([product_id])
         return self._execute_request("PUT", url, json_data=data)
+
+    def delete(self, product_id: str) -> dict:
+        """Deletes the product from your organization
+
+        Args:
+            product_id (str): ID of the product to delete
+
+        Returns:
+            dict: Deleted product object
+        """
+        url = self._get_request_url([product_id])
+        return self._execute_request("DELETE", url)
