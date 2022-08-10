@@ -17,7 +17,7 @@ class ProductsClient(BaseClient):
             dict: Created product
         """
         url = self._get_request_url()
-        return self._execute_request("POST", url, json_data=data)
+        return self._execute_request("POST", url, json_data=data).json()
 
     def all(self, search: str = None, page: int = None, limit: int = None) -> dict:
         """Returns a paginated list of all products of an organization or search by parameters
@@ -42,7 +42,7 @@ class ProductsClient(BaseClient):
             params.update({"limit": limit})
 
         url = self._get_request_url()
-        return self._execute_request("GET", url, params)
+        return self._execute_request("GET", url, params).json()
 
     def retrieve(self, product_id: str) -> dict:
         """Returns a single product object
@@ -54,7 +54,7 @@ class ProductsClient(BaseClient):
             dict: _description_
         """
         url = self._get_request_url([product_id])
-        return self._execute_request("GET", url)
+        return self._execute_request("GET", url).json()
 
     def update(self, product_id: str, data: dict) -> dict:
         """Updates an existing product information
@@ -67,7 +67,7 @@ class ProductsClient(BaseClient):
             dict: Updated product object
         """
         url = self._get_request_url([product_id])
-        return self._execute_request("PUT", url, json_data=data)
+        return self._execute_request("PUT", url, json_data=data).json()
 
     def delete(self, product_id: str) -> dict:
         """Deletes the product from your organization
@@ -79,4 +79,4 @@ class ProductsClient(BaseClient):
             dict: Deleted product object
         """
         url = self._get_request_url([product_id])
-        return self._execute_request("DELETE", url)
+        return self._execute_request("DELETE", url).json()

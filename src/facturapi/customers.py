@@ -19,7 +19,7 @@ class CustomersClient(BaseClient):
             dict: Created customer object
         """
         url = self._get_request_url()
-        return self._execute_request("POST", url, json_data=data)
+        return self._execute_request("POST", url, json_data=data).json()
 
     def all(
         self,
@@ -58,7 +58,7 @@ class CustomersClient(BaseClient):
             params.update({"limit": limit})
 
         url = self._get_request_url()
-        return self._execute_request("GET", url, params)
+        return self._execute_request("GET", url, params).json()
 
     def retrieve(self, customer_id: str) -> dict:
         """Retrieves a single customer object
@@ -70,7 +70,7 @@ class CustomersClient(BaseClient):
             dict: Customer object
         """
         url = self._get_request_url([customer_id])
-        return self._execute_request("GET", url)
+        return self._execute_request("GET", url).json()
 
     def update(self, customer_id: str, data: dict) -> dict:
         """Updates a customer object
@@ -83,7 +83,7 @@ class CustomersClient(BaseClient):
             str: Customer object
         """
         url = self._get_request_url([customer_id])
-        return self._execute_request("PUT", url, json_data=data)
+        return self._execute_request("PUT", url, json_data=data).json()
 
     def delete(self, customer_id: str) -> dict:
         """Delete a customer from your organization
@@ -95,7 +95,7 @@ class CustomersClient(BaseClient):
             dict: Deleted customer object
         """
         url = self._get_request_url([customer_id])
-        return self._execute_request("DELETE", url)
+        return self._execute_request("DELETE", url).json()
 
     def validate(self, customer_id: str) -> dict:
         """Validate customer's fiscal information
@@ -107,4 +107,4 @@ class CustomersClient(BaseClient):
             dict: JSON validation response
         """
         url = self._get_request_url([customer_id, "tax-info-validation"])
-        return self._execute_request("GET", url)
+        return self._execute_request("GET", url).json()

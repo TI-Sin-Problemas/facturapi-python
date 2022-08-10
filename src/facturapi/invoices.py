@@ -21,7 +21,7 @@ class InvoicesClient(BaseClient):
             dict: Created invoice object
         """
         url = self._get_request_url()
-        return self._execute_request("POST", url, json_data=data)
+        return self._execute_request("POST", url, json_data=data).json()
 
     def all(
         self,
@@ -68,7 +68,7 @@ class InvoicesClient(BaseClient):
             params.update({"limit": limit})
 
         url = self._get_request_url()
-        return self._execute_request("GET", url, params)
+        return self._execute_request("GET", url, params).json()
 
     def retrieve(self, invoice_id: str) -> dict:
         """Retrieves a single invoice object
@@ -80,7 +80,7 @@ class InvoicesClient(BaseClient):
             dict: Invoice object
         """
         url = self._get_request_url([invoice_id])
-        return self._execute_request("GET", url)
+        return self._execute_request("GET", url).json()
 
     def cancel(
         self,
@@ -107,4 +107,4 @@ class InvoicesClient(BaseClient):
             params.update({"substitution": substitution})
 
         url = self._get_request_url([invoice_id])
-        return self._execute_request("DELETE", url, query_params=params)
+        return self._execute_request("DELETE", url, query_params=params).json()

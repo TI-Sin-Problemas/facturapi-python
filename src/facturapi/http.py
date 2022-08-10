@@ -1,6 +1,6 @@
 """HTTP Base Client"""
 from abc import ABC, abstractmethod
-from requests import Session
+from requests import Session, Response
 
 from .exceptions import FacturapiException
 
@@ -67,7 +67,7 @@ class BaseClient(ABC):
 
     def _execute_request(
         self, method: str, url: str, query_params: dict = None, json_data: dict = None
-    ) -> dict:
+    ) -> Response:
         """Executes a HTTP request
 
         Args:
@@ -77,7 +77,7 @@ class BaseClient(ABC):
             json_data (dict, optional): For POST and PUT requests. Defaults to None.
 
         Returns:
-            dict: API response
+            Response: API response
         """
         method_switch = {
             "GET": (self.session.get, {"params": query_params}),
@@ -97,4 +97,4 @@ class BaseClient(ABC):
             raise FacturapiException(f"Request error: {error}") from error
 
         self.last_status = response.status_code
-        return response.json()
+        return response
