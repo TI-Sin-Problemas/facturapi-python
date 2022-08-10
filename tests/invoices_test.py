@@ -1,6 +1,6 @@
 """Invoices endpoint unit tests"""
 from datetime import datetime
-from src.facturapi.enums import PaymentForm
+from src.facturapi.enums import CancelationReason, PaymentForm
 
 from tests.mocks import MockCustomer, MockInvoice, MockProduct
 from tests.testcase import FacturapiTestCase
@@ -77,6 +77,17 @@ class TestInvoicesEndpoint(FacturapiTestCase):
         """Retrieve single invoice"""
         invoice_id = self._get_invoice_id()
         result = self.endpoint.retrieve(invoice_id)
+        status = self.endpoint.last_status
+
+        self.assertIn("id", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_cancel_invoice(self):
+        """Cancel invoice"""
+        invoice_id = self._get_invoice_id()
+        result = self.endpoint.cancel(
+            invoice_id, CancelationReason.ERRORS_WITHOUT_RELATION
+        )
         status = self.endpoint.last_status
 
         self.assertIn("id", result)

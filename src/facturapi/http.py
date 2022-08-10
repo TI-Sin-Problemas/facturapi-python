@@ -83,7 +83,7 @@ class BaseClient(ABC):
             "GET": (self.session.get, {"params": query_params}),
             "POST": (self.session.post, {"json": json_data}),
             "PUT": (self.session.put, {"json": json_data}),
-            "DELETE": (self.session.delete, {}),
+            "DELETE": (self.session.delete, {"params": query_params}),
         }
 
         request = method_switch.get(method.upper(), None)

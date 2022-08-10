@@ -1,5 +1,8 @@
 """Invoices API endpoint"""
 from datetime import datetime
+from typing import Union
+
+from .enums import CancelationReason
 from .http import BaseClient
 
 
@@ -78,3 +81,30 @@ class InvoicesClient(BaseClient):
         """
         url = self._get_request_url([invoice_id])
         return self._execute_request("GET", url)
+
+    def cancel(
+        self,
+        invoice_id: str,
+        reason: Union[CancelationReason, str],
+        substitution: str = None,
+    ) -> dict:
+        """Cancels an invoice. The invoice will not be valid anymore and will
+        change its status to canceled
+
+        Args:
+            invoice_id (str): Invoice ID to cancel
+            reason (CancelationReason): Reason for cancellation
+            substitution (str, optional): Substitute invoice id. Defaults to None.
+
+        Returns:
+            dict: Cancelled invoice object
+        """
+        params = {}
+        if reason:
+            params.update({"motive": reason.value})
+
+        if substitution:
+            params.update({"substitution": substitution})
+
+        url = self._get_request_url([invoice_id])
+        return self._execute_request("DELETE", url, query_params=params)
