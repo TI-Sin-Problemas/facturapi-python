@@ -16,6 +16,10 @@ class TestInvoicesEndpoint(FacturapiTestCase):
         customer_tax_id = MockCustomer().tax_id
         self.customer_id = self.api.customers.all(customer_tax_id)["data"][0]["id"]
 
+    def _get_invoice_id(self):
+        """Returns mock invoice ID"""
+        return self.endpoint.all(search=self.product.description)["data"][0]["id"]
+
     def test_create_invoice(self):
         """Create regular invoce"""
         items = [{"product": self.product._asdict()}]
@@ -67,4 +71,13 @@ class TestInvoicesEndpoint(FacturapiTestCase):
         status = self.endpoint.last_status
 
         self.assertIn("data", result)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_retrieve_invoice_object(self):
+        """Retrieve single invoice"""
+        invoice_id = self._get_invoice_id()
+        result = self.endpoint.retrieve(invoice_id)
+        status = self.endpoint.last_status
+
+        self.assertIn("id", result)
         self.assertEqual(status, self.endpoint.STATUS_OK)

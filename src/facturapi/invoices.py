@@ -66,3 +66,15 @@ class InvoicesClient(BaseClient):
 
         url = self._get_request_url()
         return self._execute_request("GET", url, params)
+
+    def retrieve(self, invoice_id: str) -> dict:
+        """Retrieves a single invoice object
+
+        Args:
+            invoice_id (str): ID of the invoice to retrieve
+
+        Returns:
+            dict: Invoice object
+        """
+        url = self._get_request_url([invoice_id])
+        return self._execute_request("GET", url)
