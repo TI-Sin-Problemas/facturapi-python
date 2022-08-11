@@ -1,6 +1,7 @@
 """Invoices API endpoint"""
 from datetime import datetime
 from typing import Union
+from xml.etree import ElementTree
 
 from .enums import CancelationReason
 from .http import BaseClient
@@ -108,3 +109,15 @@ class InvoicesClient(BaseClient):
 
         url = self._get_request_url([invoice_id])
         return self._execute_request("DELETE", url, query_params=params).json()
+
+    def get_cancellation_receipt(self, invoice_id: str) -> str:
+        """Get XM cancellation receipt of an invoice as str
+
+        Args:
+            invoice_id (str): Id of cancelled invoice
+
+        Returns:
+            str: XM cancellation receipt
+        """
+        url = self._get_request_url([invoice_id, "cancellation_receipt", "xml"])
+        return self._execute_request("GET", url).text

@@ -92,3 +92,12 @@ class TestInvoicesEndpoint(FacturapiTestCase):
 
         self.assertIn("id", result)
         self.assertEqual(status, self.endpoint.STATUS_OK)
+
+    def test_get_cancellation_receipt(self):
+        """Get cancellation receipt"""
+        invoice_id = self._get_invoice_id()
+        result = self.endpoint.get_cancellation_receipt(invoice_id)
+        status = self.endpoint.last_status
+
+        self.assertIsInstance(result, str)
+        self.assertEqual(status, self.endpoint.STATUS_OK)
