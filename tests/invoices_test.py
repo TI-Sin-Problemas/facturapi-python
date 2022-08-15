@@ -1,103 +1,98 @@
-"""Invoices endpoint unit tests"""
+# """Invoices endpoint unit tests"""
 from datetime import datetime
 from src.facturapi.enums import CancelationReason, PaymentForm
 
-from tests.mocks import MockCustomer, MockInvoice, MockProduct
-from tests.testcase import FacturapiTestCase
+from .mocks import MockCustomer, MockInvoice, MockProduct
+from .testcase import FacturapiTestCase, assert_property_in, assert_status
 
 
 class TestInvoicesEndpoint(FacturapiTestCase):
     """Invoices endpoint Test Cases"""
 
-    def __init__(self, methodName: str = ...) -> None:
-        super().__init__(methodName)
-        self.endpoint = self.api.invoices
-        self.product = MockProduct()
-        customer_tax_id = MockCustomer().tax_id
-        self.customer_id = self.api.customers.all(customer_tax_id)["data"][0]["id"]
+    mock_product = MockProduct()
+    mock_customer = MockCustomer()
+    endpoint = "invoices"
 
-    def _get_invoice_id(self):
-        """Returns mock invoice ID"""
-        return self.endpoint.all(search=self.product.description)["data"][0]["id"]
+    def _generate_mock_invoice(self):
+        """Returns mock items list"""
+        customer = self.mock_customer._asdict()
+        items = [{"product": self.mock_product._asdict()}]
+        return MockInvoice(customer, items, PaymentForm.EFECTIVO.value)._asdict()
 
-    def test_create_invoice(self):
-        """Create regular invoce"""
-        items = [{"product": self.product._asdict()}]
-        invoice = MockInvoice(self.customer_id, items, PaymentForm.EFECTIVO.value)
-        result = self.endpoint.create(invoice._asdict())
-        status = self.endpoint.last_status
+    def test_crd(self):
+        """Test complete CRD"""
 
-        self.assertIn("id", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        # Create test
+        endpoint = self._get_endpoint(self.endpoint)
+        mock_invoice = self._generate_mock_invoice()
+        new_invoice = endpoint.create(mock_invoice)
+
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("id", new_invoice)
+
+        invoice_id = new_invoice["id"]
+
+        # Retrieve test
+        retrieved_invoice = endpoint.retrieve(invoice_id)
+
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("id", retrieved_invoice)
+
+        # Cancelation test
+        cancellation_reason = CancelationReason.ERRORS_WITHOUT_RELATION
+        cancelled_invoice = endpoint.cancel(invoice_id, cancellation_reason)
+
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("id", cancelled_invoice)
+
+        # Get cancellation receipt
+        cancellation_receipt = endpoint.get_cancellation_receipt(invoice_id)
+
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert isinstance(cancellation_receipt, str)
 
     def test_get_all_invoices(self):
         """Get all invoices"""
-        result = self.endpoint.all()
-        status = self.endpoint.last_status
+        endpoint = self._get_endpoint(self.endpoint)
+        result = endpoint.all()
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)
 
     def test_search_invoices_by_product(self):
         """Search invoices by product description"""
-        result = self.endpoint.all(search=self.product.description)
-        status = self.endpoint.last_status
+        endpoint = self._get_endpoint(self.endpoint)
+        result = endpoint.all(search=self.mock_product.description)
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)
 
     def test_search_invoices_by_customer(self):
         """Search invoices by customer ID"""
-        result = self.endpoint.all(customer_id=self.customer_id)
-        status = self.endpoint.last_status
+        endpoint = self._get_endpoint(self.endpoint)
+        customers_endpoint = self._get_endpoint("customers")
+        customers = customers_endpoint.all()["data"]
+        first_customer = customers[0]
+        result = endpoint.all(customer_id=first_customer["id"])
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)
 
     def test_get_invoices_created_last_year(self):
         """Get all invoices created last year"""
+        endpoint = self._get_endpoint(self.endpoint)
         today = datetime.today()
         last_january = today.replace(year=today.year - 1, month=1, day=1)
         last_december = today.replace(year=today.year - 1, month=12, day=31)
-        result = self.endpoint.all(start_date=last_january, end_date=last_december)
-        status = self.endpoint.last_status
+        result = endpoint.all(start_date=last_january, end_date=last_december)
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)
 
     def test_get_invoice_first_page(self):
         """Get first page of invoice limited by 5"""
-        result = self.endpoint.all(page=1, limit=5)
-        status = self.endpoint.last_status
+        endpoint = self._get_endpoint(self.endpoint)
+        result = endpoint.all(page=1, limit=5)
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
-
-    def test_retrieve_invoice_object(self):
-        """Retrieve single invoice"""
-        invoice_id = self._get_invoice_id()
-        result = self.endpoint.retrieve(invoice_id)
-        status = self.endpoint.last_status
-
-        self.assertIn("id", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
-
-    def test_cancel_invoice(self):
-        """Cancel invoice"""
-        invoice_id = self._get_invoice_id()
-        result = self.endpoint.cancel(
-            invoice_id, CancelationReason.ERRORS_WITHOUT_RELATION
-        )
-        status = self.endpoint.last_status
-
-        self.assertIn("id", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
-
-    def test_get_cancellation_receipt(self):
-        """Get cancellation receipt"""
-        invoice_id = self._get_invoice_id()
-        result = self.endpoint.get_cancellation_receipt(invoice_id)
-        status = self.endpoint.last_status
-
-        self.assertIsInstance(result, str)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)

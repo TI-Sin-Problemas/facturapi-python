@@ -28,6 +28,6 @@ class MockProduct(NamedTuple):
 class MockInvoice(NamedTuple):
     """Mock invoice class"""
 
-    customer: str
+    customer: dict
     items: list
     payment_form: str

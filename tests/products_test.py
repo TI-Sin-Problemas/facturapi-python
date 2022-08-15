@@ -3,80 +3,67 @@ from random import choice, randint
 from string import ascii_lowercase
 
 from tests.mocks import MockProduct
-from tests.testcase import FacturapiTestCase
+from tests.testcase import FacturapiTestCase, assert_property_in, assert_status
 
 
 class TestProductsEndpoint(FacturapiTestCase):
     """Products endpoint Test Cases"""
 
-    product = MockProduct()
+    mock_product = MockProduct()
+    endpoint = "products"
 
-    def __init__(self, methodName: str = ...) -> None:
-        super().__init__(methodName)
-        self.endpoint = self.api.products
+    def test_crud(self):
+        """Test complete CRUD"""
 
-    def _get_product_id(self):
-        """Returns mock product ID"""
-        return self.endpoint.all(search=self.product.description)["data"][0]["id"]
+        # Create test
+        mock_product = self.mock_product._asdict()
+        endpoint = self._get_endpoint(self.endpoint)
+        new_product = endpoint.create(mock_product)
 
-    def test_create_product(self):
-        """Create product"""
-        product = self.product._asdict()
-        result = self.endpoint.create(product)
-        status = self.endpoint.last_status
+        assert_status(endpoint.last_status, endpoint.STATUS_CREATED)
+        assert_property_in("id", new_product)
 
-        self.assertIn("id", result)
-        self.assertIn(status, [self.endpoint.STATUS_CREATED, self.endpoint.STATUS_OK])
+        product_id = new_product["id"]
+
+        # Retrieve test
+        retrieved_product = endpoint.retrieve(product_id)
+
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("id", retrieved_product)
+
+        # Update test
+        fake_sku = "".join(choice(ascii_lowercase) for i in range(randint(5, 10)))
+        modified_data = {"sku": fake_sku, **mock_product}
+        updated_customer = endpoint.update(product_id, modified_data)
+
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert updated_customer["sku"] == fake_sku
+
+        # Delete test
+        endpoint.delete(product_id)
+
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
 
     def test_get_all_products(self):
         """Get all products"""
-        result = self.endpoint.all()
-        status = self.endpoint.last_status
+        endpoint = self._get_endpoint(self.endpoint)
+        result = endpoint.all()
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)
 
     def test_search_products(self):
         """Search products"""
-        result = self.endpoint.all(search=self.product.description)
-        status = self.endpoint.last_status
+        endpoint = self._get_endpoint(self.endpoint)
+        result = endpoint.all(search=self.mock_product.description)
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)
 
     def test_get_limited_products_by_page(self):
         """Get first page of products limited by 5"""
-        result = self.endpoint.all(page=1, limit=5)
-        status = self.endpoint.last_status
+        endpoint = self._get_endpoint(self.endpoint)
+        result = endpoint.all(page=1, limit=5)
 
-        self.assertIn("data", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
-
-    def test_retrieve_product(self):
-        """Retrieve single product object"""
-        result = self.endpoint.retrieve(self._get_product_id())
-        status = self.endpoint.last_status
-
-        self.assertIn("id", result)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
-
-    def test_update_product(self):
-        """Update product"""
-        product = self.endpoint.retrieve(self._get_product_id())
-        fake_sku = "".join(choice(ascii_lowercase) for i in range(randint(5, 10)))
-        modified_data = {"sku": fake_sku, **self.product._asdict()}
-
-        result = self.endpoint.update(product["id"], modified_data)
-        status = self.endpoint.last_status
-
-        self.assertEqual(result["sku"], fake_sku)
-        self.assertEqual(status, self.endpoint.STATUS_OK)
-
-    def test_delete_product(self):
-        """Delete product"""
-        product_id = self._get_product_id()
-        result = self.endpoint.delete(product_id)
-        status = self.endpoint.last_status
-
-        self.assertEqual(product_id, result["id"])
-        self.assertEqual(status, self.endpoint.STATUS_OK)
+        assert_status(endpoint.last_status, endpoint.STATUS_OK)
+        assert_property_in("data", result)
