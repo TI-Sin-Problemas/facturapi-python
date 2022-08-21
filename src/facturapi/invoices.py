@@ -159,3 +159,20 @@ class InvoicesClient(BaseClient):
         """
         url = self.__get_download_file_url("zip", invoice_id)
         return self._execute_request("GET", url).content
+
+    def send_by_email(self, invoice_id: str, email: str = None) -> dict:
+        """Send an email to your client's address, with the XML and PDF files attached to the
+        message
+
+        Args:
+            invoice_id (str): Id of invoice
+            email (str, optional): Email address to send the invoice. If this parameter is None,
+            the invoice will be sent to the email that the customer has registered.
+            Defaults to None.
+
+        Returns:
+            dict: Response message
+        """
+        url = self._get_request_url([invoice_id, "email"])
+        data = {"email": email} if email else {}
+        return self._execute_request("POST", url, json_data=data).json()
