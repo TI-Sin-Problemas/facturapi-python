@@ -1,7 +1,6 @@
 """Invoices API endpoint"""
 from datetime import datetime
 from typing import Union
-from xml.etree import ElementTree
 
 from .enums import CancelationReason
 from .http import BaseClient
@@ -11,6 +10,9 @@ class InvoicesClient(BaseClient):
     """Products API client"""
 
     endpoint = "invoices"
+
+    def __get_download_file_url(self, file_format: str, invoice_id: str):
+        return self._get_request_url([invoice_id, file_format])
 
     def create(self, data: dict) -> dict:
         """Creates a new invoice
@@ -111,13 +113,25 @@ class InvoicesClient(BaseClient):
         return self._execute_request("DELETE", url, query_params=params).json()
 
     def get_cancellation_receipt(self, invoice_id: str) -> str:
-        """Get XM cancellation receipt of an invoice as str
+        """Get XML cancellation receipt of an invoice as str
 
         Args:
             invoice_id (str): Id of cancelled invoice
 
         Returns:
-            str: XM cancellation receipt
+            str: XML cancellation receipt
         """
         url = self._get_request_url([invoice_id, "cancellation_receipt", "xml"])
         return self._execute_request("GET", url).text
+
+    def download_pdf(self, invoice_id: str) -> bytes:
+        """Download invoice PDF file
+
+        Args:
+            invoice_id (str): Id of invoice
+
+        Returns:
+            bytes: Invoice PDF file
+        """
+        url = self.__get_download_file_url("pdf", invoice_id)
+        return self._execute_request("GET", url).content
