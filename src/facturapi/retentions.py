@@ -104,3 +104,15 @@ class RetentionsClient(BaseClient):
         """
         url = self._get_download_file_url("pdf", retention_id)
         return self._execute_request("GET", url).content
+
+    def download_xml(self, retention_id: str) -> bytes:
+        """Download retention XML file
+
+        Args:
+            retention_id (str): Id of retention
+
+        Returns:
+            bytes: Retention XML file
+        """
+        url = self._get_download_file_url("xml", retention_id)
+        return self._execute_request("GET", url)
