@@ -128,3 +128,20 @@ class RetentionsClient(BaseClient):
         """
         url = self._get_download_file_url("zip", retention_id)
         return self._execute_request("GET", url).content
+
+    def send_by_email(self, retention_id: str, email: str = None) -> dict:
+        """Send an email to your customer's address, with the XML and PDF files attached to the
+        message
+
+        Args:
+            retention_id (str): Id of the retention object
+            email (str, optional): Email address to send the retention. If this parameter is None,
+            the retention will be sent the email that the customer has registered.
+            Defaults to None.
+
+        Returns:
+            dict: Response message
+        """
+        url = self._get_request_url([retention_id, "email"])
+        data = {"email": email} if email else {}
+        return self._execute_request("POST", url, json_data=data).json()
