@@ -68,3 +68,15 @@ class RetentionsClient(BaseClient):
 
         url = self._get_request_url()
         return self._execute_request("GET", url, params).json()
+
+    def retrieve(self, retention_id: str) -> dict:
+        """Retrieves a single retention object
+
+        Args:
+            retention_id (str): ID of the retention to retrieve
+
+        Returns:
+            dict: Retention object
+        """
+        url = self._get_request_url([retention_id])
+        return self._execute_request("GET", url).json()
