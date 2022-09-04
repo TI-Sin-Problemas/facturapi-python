@@ -87,3 +87,16 @@ class ReceiptsClient(BaseClient):
         """
         url = self._get_request_url([receipt_id])
         return self._execute_request("DELETE", url).json()
+
+    def invoice(self, receipt_id: str, invoice_data: dict) -> dict:
+        """Creates an invoice object from a receipt
+
+        Args:
+            receipt_id (str): ID of the receipt
+            invoice_data (dict): Data for the invoice to be created
+
+        Returns:
+            dict: Created invoice object
+        """
+        url = self._get_request_url([receipt_id, "invoice"])
+        return self._execute_request("POST", url, json_data=invoice_data)
