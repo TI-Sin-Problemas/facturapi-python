@@ -1,8 +1,9 @@
 """Facturapi API Client"""
 
 from .customers import CustomersClient
-from .products import ProductsClient
 from .invoices import InvoicesClient
+from .products import ProductsClient
+from .receipts import ReceiptsClient
 from .retentions import RetentionsClient
 
 
@@ -16,3 +17,5 @@ class Facturapi:
         self.products = ProductsClient(facturapi_key)
         self.invoices = InvoicesClient(facturapi_key)
         self.withholdings = RetentionsClient(facturapi_key)
+        self.receipts = ReceiptsClient(facturapi_key)
+        self.retentions = RetentionsClient(facturapi_key)
