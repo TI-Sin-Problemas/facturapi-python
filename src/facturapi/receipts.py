@@ -62,3 +62,15 @@ class ReceiptsClient(BaseClient):
 
         url = self._get_request_url()
         return self._execute_request("GET", url, params).json()
+
+    def retrieve(self, receipt_id: str) -> dict:
+        """Retrieves a single receipt object
+
+        Args:
+            receipt_id (str): ID of the receipt to retrieve
+
+        Returns:
+            dict: Receipt object
+        """
+        url = self._get_request_url([receipt_id])
+        return self._execute_request("GET", url).json()
