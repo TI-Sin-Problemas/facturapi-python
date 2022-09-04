@@ -100,3 +100,16 @@ class ReceiptsClient(BaseClient):
         """
         url = self._get_request_url([receipt_id, "invoice"])
         return self._execute_request("POST", url, json_data=invoice_data)
+
+    def create_global_invoice(self, data: dict) -> dict:
+        """Creates a global invoice which includes all the receipt with "open" status of a certain
+        period
+
+        Args:
+            data (dict): Invoice data
+
+        Returns:
+            dict: Created invoice object
+        """
+        url = self._get_request_url(["global-invoice"])
+        return self._execute_request("POST", url, json_data=data).json()
