@@ -23,13 +23,13 @@ class BaseClient(ABC):
         (e.g.: the customers API sets the value to 'customers')
         """
 
-    def __init__(self, facturapi_key: str, api_version="v2") -> None:
-        self.facturapi_key = facturapi_key
+    def __init__(self, api_key: str, api_version="v2") -> None:
+        self.api_key = api_key
         self.api_version = api_version
         self.last_status = None
 
         self.session = Session()
-        self.session.auth = (self.facturapi_key, "")
+        self.session.auth = (self.api_key, "")
         self.session.headers.update({"Content-Type": "application/json"})
 
     def _get_endpoint(self) -> str:

@@ -33,7 +33,7 @@ class InvoicesClient(BaseClient):
         limit: int = None,
     ) -> dict:
         """Returns a paginated list of all invoices in an organization
-        or makes a search acording to parameters
+        or makes a search according to parameters
 
         Args:
             search (str, optional): Text to search on the invoice. Defaults to None.
