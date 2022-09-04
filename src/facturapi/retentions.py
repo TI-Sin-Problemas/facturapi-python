@@ -115,4 +115,16 @@ class RetentionsClient(BaseClient):
             bytes: Retention XML file
         """
         url = self._get_download_file_url("xml", retention_id)
-        return self._execute_request("GET", url)
+        return self._execute_request("GET", url).content
+
+    def download_zip(self, retention_id: str) -> bytes:
+        """Download retention ZIP file
+
+        Args:
+            retention_id (str): ID of retention
+
+        Returns:
+            bytes: Retention ZIP file
+        """
+        url = self._get_download_file_url("zip", retention_id)
+        return self._execute_request("GET", url).content

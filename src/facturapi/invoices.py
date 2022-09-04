@@ -143,7 +143,7 @@ class InvoicesClient(BaseClient):
             bytes: Invoice XML file
         """
         url = self._get_download_file_url("xml", invoice_id)
-        return self._execute_request("GET", url)
+        return self._execute_request("GET", url).content
 
     def download_zip(self, invoice_id: str) -> bytes:
         """Download invoice ZIP file
