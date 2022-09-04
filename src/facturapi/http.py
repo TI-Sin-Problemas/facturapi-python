@@ -98,3 +98,6 @@ class BaseClient(ABC):
 
         self.last_status = response.status_code
         return response
+
+    def _get_download_file_url(self, file_format: str, object_id: str):
+        return self._get_request_url([object_id, file_format])

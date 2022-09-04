@@ -92,3 +92,15 @@ class RetentionsClient(BaseClient):
         """
         url = self._get_request_url([retention_id])
         return self._execute_request("DELETE", url).json()
+
+    def download_pdf(self, retention_id: str) -> bytes:
+        """Download retention PDF file
+
+        Args:
+            retention_id (str): Id of retention
+
+        Returns:
+            bytes: Retention PDF file
+        """
+        url = self._get_download_file_url("pdf", retention_id)
+        return self._execute_request("GET", url).content

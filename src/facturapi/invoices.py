@@ -11,9 +11,6 @@ class InvoicesClient(BaseClient):
 
     endpoint = "invoices"
 
-    def __get_download_file_url(self, file_format: str, invoice_id: str):
-        return self._get_request_url([invoice_id, file_format])
-
     def create(self, data: dict) -> dict:
         """Creates a new invoice
 
@@ -49,7 +46,7 @@ class InvoicesClient(BaseClient):
             results to return. Used for pagination. Defaults to None.
 
         Returns:
-            dict: _description_
+            dict: List of invoices
         """
         params = {}
         if search:
@@ -133,7 +130,7 @@ class InvoicesClient(BaseClient):
         Returns:
             bytes: Invoice PDF file
         """
-        url = self.__get_download_file_url("pdf", invoice_id)
+        url = self._get_download_file_url("pdf", invoice_id)
         return self._execute_request("GET", url).content
 
     def download_xml(self, invoice_id: str) -> bytes:
@@ -145,7 +142,7 @@ class InvoicesClient(BaseClient):
         Returns:
             bytes: Invoice XML file
         """
-        url = self.__get_download_file_url("xml", invoice_id)
+        url = self._get_download_file_url("xml", invoice_id)
         return self._execute_request("GET", url)
 
     def download_zip(self, invoice_id: str) -> bytes:
@@ -157,7 +154,7 @@ class InvoicesClient(BaseClient):
         Returns:
             bytes: Invoice ZIP file
         """
-        url = self.__get_download_file_url("zip", invoice_id)
+        url = self._get_download_file_url("zip", invoice_id)
         return self._execute_request("GET", url).content
 
     def send_by_email(self, invoice_id: str, email: str = None) -> dict:
