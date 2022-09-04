@@ -80,3 +80,15 @@ class RetentionsClient(BaseClient):
         """
         url = self._get_request_url([retention_id])
         return self._execute_request("GET", url).json()
+
+    def cancel(self, retention_id: str) -> dict:
+        """Cancels a retention.
+
+        Args:
+            retention_id (str): ID of the retention to cancel
+
+        Returns:
+            dict: Cancelled retention object
+        """
+        url = self._get_request_url([retention_id])
+        return self._execute_request("DELETE", url).json()
