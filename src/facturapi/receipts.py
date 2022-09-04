@@ -74,3 +74,16 @@ class ReceiptsClient(BaseClient):
         """
         url = self._get_request_url([receipt_id])
         return self._execute_request("GET", url).json()
+
+    def cancel(self, receipt_id: str) -> dict:
+        """Cancels a receipt, changing its status property to "canceled".
+        Once it has been cancelled, it can't be invoiced
+
+        Args:
+            receipt_id (str): Receipt ID to cancel
+
+        Returns:
+            dict: Cancelled receipt object
+        """
+        url = self._get_request_url([receipt_id])
+        return self._execute_request("DELETE", url).json()
