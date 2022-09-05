@@ -66,6 +66,18 @@ class OrganizationsClient(BaseClient):
         url = self._get_request_url()
         return self._execute_request("GET", url, params).json()
 
+    def retrieve(self, organization_id) -> dict:
+        """Returns a single organization object
+
+        Args:
+            organization_id (_type_): ID of the organization
+
+        Returns:
+            dict: Organization object
+        """
+        url = self._get_request_url([organization_id])
+        return self._execute_request("GET", url).json()
+
     def update(self, organization_id: str, data: dict) -> dict:
         """Updates the fiscal data of the organization
 
@@ -202,4 +214,4 @@ class OrganizationsClient(BaseClient):
             dict: Updated organization domain
         """
         url = self._get_request_url([organization_id, "domain"])
-        return self._execute_request("GET", url, json_data={"domain": domain}).json()
+        return self._execute_request("PUT", url, json_data={"domain": domain}).json()
