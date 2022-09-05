@@ -1,3 +1,5 @@
+![PyPI - Downloads](https://img.shields.io/pypi/dm/facturapi-python?logoColor=yellow&style=for-the-badge) ![PyPI](https://img.shields.io/pypi/v/facturapi-python?label=Latest&logo=pypi&logoColor=yellow&style=for-the-badge) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/facturapi-python?logo=python&logoColor=yellow&style=for-the-badge) ![GitHub Repo stars](https://img.shields.io/github/stars/TI-Sin-Problemas/facturapi-python?logo=github&style=for-the-badge) ![GitHub issues](https://img.shields.io/github/issues/TI-Sin-Problemas/facturapi-python?logo=github&style=for-the-badge)
+
 # FacturAPI Unofficial Python client
 
 This is an unofficial Python wrapper for [FacturAPI](https://facturapi.io/)
