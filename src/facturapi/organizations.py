@@ -66,10 +66,31 @@ class OrganizationsClient(BaseClient):
         """Updates the fiscal data of the organization
 
         Args:
+            organization_id (str): ID of the organization
             data (dict): Organization data to update
 
         Returns:
             dict: Updated organization object
         """
-        url = self._get_request_url([organization_id])
+        url = self._get_request_url([organization_id, "legal"])
         return self._execute_request("PUT", url, json_data=data).json()
+
+    def upload_csd(
+        self, organization_id: str, cer_file: bytes, key_file: bytes, password: str
+    ) -> dict:
+        """Uploads the files of the Digital Seal Certificate (CSD) provided by SAT.
+        This call should also be used to replace existing certificates should new ones be requested
+
+        Args:
+            organization_id (str): ID of the organization
+            cer_file (bytes): Binary content of the .cer file
+            key_file (bytes): Binary content of the .key file
+            password (str): Certificate key password
+
+        Returns:
+            dict: Updated organization object
+        """
+
+        data = {"cerFile": cer_file, "keyFile": key_file, "password": password}
+        url = self._get_request_url([organization_id, "certificate"])
+        return self._execute_request("PUT", url, json_data=data)
