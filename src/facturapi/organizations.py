@@ -108,3 +108,33 @@ class OrganizationsClient(BaseClient):
         """
         url = self._get_request_url([organization_id, "logo"])
         return self._execute_request("PUT", url, json_data={"file": file})
+
+    def update_customization(
+        self,
+        organization_id: str,
+        color: str,
+        next_folio_number: int,
+        next_folio_number_test: int,
+        pdf_extra: dict,
+    ) -> dict:
+        """Updates the information related with the organization's branding
+
+        Args:
+            organization_id (str): ID of the organization
+            color (str): Hexadecimal RGB color code
+            next_folio_number (int): Folio number used for the next created invoice on live mode
+            next_folio_number_test (int): Folio number used for the next created invoice on test
+            mode
+            pdf_extra (dict): Optional fields to show on PDF files
+
+        Returns:
+            dict: Organization object
+        """
+        url = self._get_request_url([organization_id, "customization"])
+        data = {
+            "color": color,
+            "next_folio_number": next_folio_number,
+            "next_folio_number_test": next_folio_number_test,
+            "pdf_extra": pdf_extra,
+        }
+        self._execute_request("PUT", url, json_data=data)
