@@ -10,7 +10,7 @@ description = "Unofficial Facturapi.io Python wrapper"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.7"
-dependencies = ["requests"]
+dependencies = ["requests>=2.28, <3"]
 keywords = ["cfdi", "factura", "mexico", "sat"]
 classifiers = [
     "Programming Language :: Python :: 3",
