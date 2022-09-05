@@ -35,7 +35,8 @@ class OrganizationsClient(BaseClient):
         or makes a search according to parameters
 
         Args:
-            search (str, optional): Text to search on commercial name, legal name or tax ID. Defaults to None.
+            search (str, optional): Text to search on commercial name, legal name or tax ID.
+            Defaults to None.
             start_date (datetime, optional): Lower limit of a date range. Defaults to None.
             end_date (datetime, optional): Upper limit of a date range. Defaults to None.
             page (int, optional): Result page to return, beginning with 1. Defaults to None.
@@ -96,7 +97,7 @@ class OrganizationsClient(BaseClient):
 
         data = {"cerFile": cer_file, "keyFile": key_file, "password": password}
         url = self._get_request_url([organization_id, "certificate"])
-        return self._execute_request("PUT", url, json_data=data)
+        return self._execute_request("PUT", url, json_data=data).json()
 
     def upload_logo(self, organization_id: str, file: bytes) -> dict:
         """Uploads the organization's logo thet will be used for the PDF invoices and emails sent
@@ -110,7 +111,7 @@ class OrganizationsClient(BaseClient):
             dict: Organization object
         """
         url = self._get_request_url([organization_id, "logo"])
-        return self._execute_request("PUT", url, json_data={"file": file})
+        return self._execute_request("PUT", url, json_data={"file": file}).json()
 
     def update_customization(
         self,
@@ -140,7 +141,7 @@ class OrganizationsClient(BaseClient):
             "next_folio_number_test": next_folio_number_test,
             "pdf_extra": pdf_extra,
         }
-        return self._execute_request("PUT", url, json_data=data)
+        return self._execute_request("PUT", url, json_data=data).json()
 
     def update_receipt_settings(
         self,
@@ -165,7 +166,7 @@ class OrganizationsClient(BaseClient):
             next_folio_number_test (int): Folio number used for the next created receipt on test
 
         Returns:
-            dict: _description_
+            dict: Organization object
         """
         url = self._get_request_url([organization_id, "receipts"])
         data = {
@@ -174,4 +175,17 @@ class OrganizationsClient(BaseClient):
             "next_folio_number": next_folio_number,
             "next_folio_number_test": next_folio_number_test,
         }
-        return self._execute_request("PUT", url, json_data=data)
+        return self._execute_request("PUT", url, json_data=data).json()
+
+    def check_domain(self, domain: str) -> bool:
+        """Checks if an identifier is available to choose as a domain for the self-billing portal
+
+        Args:
+            domain (str): Domain name
+
+        Returns:
+            bool: True if domain is available
+        """
+        url = self._get_request_url("domain-check")
+        response = self._execute_request("GET", url, [domain]).json()
+        return response["available"]
