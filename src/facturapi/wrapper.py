@@ -7,6 +7,7 @@ from .products import ProductsClient
 from .receipts import ReceiptsClient
 from .retentions import RetentionsClient
 from .organizations import OrganizationsClient
+from .tools import HealthCheck
 
 
 class Facturapi:
@@ -14,6 +15,15 @@ class Facturapi:
 
     BASE_URL = "https://www.facturapi.io/"
     catalogs = Catalogs()
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self}>"
+
+    def __str__(self) -> str:
+        healthcheck = self.healthcheck.check_status()
+        if not healthcheck:
+            return "Service down!"
+        return "Service is ok"
 
     def __init__(self, facturapi_key: str) -> None:
         self.customers = CustomersClient(facturapi_key)
@@ -23,3 +33,4 @@ class Facturapi:
         self.receipts = ReceiptsClient(facturapi_key)
         self.retentions = RetentionsClient(facturapi_key)
         self.organizations = OrganizationsClient(facturapi_key)
+        self.healthcheck = HealthCheck(facturapi_key)

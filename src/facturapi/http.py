@@ -13,6 +13,7 @@ class BaseClient(ABC):
     STATUS_OK = 200
     STATUS_CREATED = 201
     STATUS_BAD_REQUEST = 400
+    STATUS_NOT_AUTHENTICATED = 401
     STATUS_NOT_FOUND = 404
     STATUS_CONFLICT = 409
 
@@ -97,6 +98,10 @@ class BaseClient(ABC):
             raise FacturapiException(f"Request error: {error}") from error
 
         self.last_status = response.status_code
+
+        if response.status_code == self.STATUS_NOT_AUTHENTICATED:
+            raise FacturapiException("Wrong API KEY")
+
         return response
 
     def _get_download_file_url(self, file_format: str, object_id: str):
