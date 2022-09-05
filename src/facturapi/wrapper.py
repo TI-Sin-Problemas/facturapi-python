@@ -15,11 +15,11 @@ class Facturapi:
     BASE_URL = "https://www.facturapi.io/"
     catalogs = Catalogs()
 
-    def __init__(self, facturapi_key: str, user_secret_key: str = None) -> None:
+    def __init__(self, facturapi_key: str) -> None:
         self.customers = CustomersClient(facturapi_key)
         self.products = ProductsClient(facturapi_key)
         self.invoices = InvoicesClient(facturapi_key)
         self.withholdings = RetentionsClient(facturapi_key)
         self.receipts = ReceiptsClient(facturapi_key)
         self.retentions = RetentionsClient(facturapi_key)
-        self.organizations = OrganizationsClient(user_secret_key)
+        self.organizations = OrganizationsClient(facturapi_key)

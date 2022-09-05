@@ -61,3 +61,15 @@ class OrganizationsClient(BaseClient):
 
         url = self._get_request_url()
         return self._execute_request("GET", url, params).json()
+
+    def update(self, organization_id: str, data: dict) -> dict:
+        """Updates the fiscal data of the organization
+
+        Args:
+            data (dict): Organization data to update
+
+        Returns:
+            dict: Updated organization object
+        """
+        url = self._get_request_url([organization_id])
+        return self._execute_request("PUT", url, json_data=data).json()
