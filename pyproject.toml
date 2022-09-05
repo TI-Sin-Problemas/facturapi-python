@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "facturapi-python"
-version = "0.0.1"
+version = "0.0.2"
 authors = [{ name = "TI Sin Problemas", email = "pypi@tisinproblemas.com" }]
 description = "Unofficial Facturapi.io Python wrapper"
 readme = "README.md"
