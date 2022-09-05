@@ -1,8 +1,10 @@
 """Various utility endpoints"""
 from .http import BaseClient
 
+
 class HealthCheck(BaseClient):
     """Healthcheck service"""
+
     endpoint = "check"
 
     def check_status(self) -> bool:
@@ -13,15 +15,16 @@ class HealthCheck(BaseClient):
         """
         url = self._get_request_url()
         return self._execute_request("GET", url).json()["ok"]
-        
 
-class ToolsClient(BaseClient) -> dict:
+
+class ToolsClient(BaseClient):
     """Tools API endpoint"""
+
     endpoint = "tools"
-    
-    def validate_tax_id(self, tax_id: str)-> dict:
+
+    def validate_tax_id(self, tax_id: str) -> dict:
         """Check the status of a tax ID (RFC) in the list of EFOS (Companies that Invoice
-        Simulated Operations). By appearing on this list, the RFC is or was suspected of engaging 
+        Simulated Operations). By appearing on this list, the RFC is or was suspected of engaging
         in simulation of fiscal operations.
 
         Args:
