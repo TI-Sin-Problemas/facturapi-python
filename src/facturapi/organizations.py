@@ -211,7 +211,7 @@ class OrganizationsClient(BaseClient):
             bool: True if domain is available
         """
         url = self._get_request_url(["domain-check"])
-        response = self._execute_request("GET", url, [domain]).json()
+        response = self._execute_request("GET", url, {"domain": domain}).json()
         return response["available"]
 
     def update_domain(self, organization_id: str, domain: str) -> dict:

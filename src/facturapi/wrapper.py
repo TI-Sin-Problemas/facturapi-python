@@ -7,7 +7,7 @@ from .products import ProductsClient
 from .receipts import ReceiptsClient
 from .retentions import RetentionsClient
 from .organizations import OrganizationsClient
-from .tools import HealthCheck
+from .tools import HealthCheck, ToolsClient
 
 
 class Facturapi:
@@ -34,3 +34,4 @@ class Facturapi:
         self.retentions = RetentionsClient(facturapi_key)
         self.organizations = OrganizationsClient(facturapi_key)
         self.healthcheck = HealthCheck(facturapi_key)
+        self.tools = ToolsClient(facturapi_key)
