@@ -227,3 +227,39 @@ class OrganizationsClient(BaseClient):
         """
         url = self._get_request_url([organization_id, "domain"])
         return self._execute_request("PUT", url, json_data={"domain": domain}).json()
+
+    def get_test_api_key(self, organization_id: str) -> str:
+        """Retrieves the test environment secret API key of an organization
+
+        Args:
+            organization_id (str): ID of the organization
+
+        Returns:
+            str: Test API Key
+        """
+        url = self._get_request_url([organization_id, "apikeys", "test"])
+        return self._execute_request("GET", url).json()
+
+    def renew_test_api_key(self, organization_id: str) -> str:
+        """Renews the test environment secret API key of an organization
+
+        Args:
+            organization_id (str): ID of the organization
+
+        Returns:
+            str: Test API Key
+        """
+        url = self._get_request_url([organization_id, "apikeys", "test"])
+        return self._execute_request("PUT", url).json()
+
+    def renew_live_api_key(self, organization_id: str) -> str:
+        """Renews the live environment secret API key of an organization
+
+        Args:
+            organization_id (str): ID of the organization
+
+        Returns:
+            str: Live API Key
+        """
+        url = self._get_request_url([organization_id, "apikeys", "live"])
+        return self._execute_request("PUT", url).json()
