@@ -94,3 +94,17 @@ class OrganizationsClient(BaseClient):
         data = {"cerFile": cer_file, "keyFile": key_file, "password": password}
         url = self._get_request_url([organization_id, "certificate"])
         return self._execute_request("PUT", url, json_data=data)
+
+    def upload_logo(self, organization_id: str, file: bytes) -> dict:
+        """Uploads the organization's logo thet will be used for the PDF invoices and emails sent
+        to the customer
+
+        Args:
+            organization_id (str): ID of the organization
+            file (bytes): Logo file to be uploaded
+
+        Returns:
+            dict: Organization object
+        """
+        url = self._get_request_url([organization_id, "logo"])
+        return self._execute_request("PUT", url, json_data={"file": file})
