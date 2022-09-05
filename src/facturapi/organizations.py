@@ -91,6 +91,18 @@ class OrganizationsClient(BaseClient):
         url = self._get_request_url([organization_id, "legal"])
         return self._execute_request("PUT", url, json_data=data).json()
 
+    def delete(self, organization_id: str) -> dict:
+        """Delete an organization
+
+        Args:
+            organization_id (str): ID of the organization to delete
+
+        Returns:
+            dict: Deleted organization object
+        """
+        url = self._get_request_url([organization_id])
+        return self._execute_request("DELETE", url).json()
+
     def upload_csd(
         self, organization_id: str, cer_file: bytes, key_file: bytes, password: str
     ) -> dict:
