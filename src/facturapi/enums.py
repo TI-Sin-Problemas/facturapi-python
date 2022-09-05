@@ -1,6 +1,7 @@
 """Enum constants"""
 
 from enum import Enum
+from typing import NamedTuple
 
 
 class PaymentForm(Enum):
@@ -30,8 +31,13 @@ class PaymentForm(Enum):
     POR_DEFINIR = "99"
 
 
-class CancelationReason(Enum):
+class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
     OPERATION_NOT_CARRIED_OUT = "03"
     NOMINATIVE_TRANSACTION = "04"
+
+
+class Catalogs(NamedTuple):
+    payment_forms = PaymentForm
+    cancellation_reasons = CancellationReason

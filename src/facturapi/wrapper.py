@@ -1,6 +1,7 @@
 """Facturapi API Client"""
 
 from .customers import CustomersClient
+from .enums import Catalogs
 from .invoices import InvoicesClient
 from .products import ProductsClient
 from .receipts import ReceiptsClient
@@ -12,6 +13,7 @@ class Facturapi:
     """Facturapi wrapper"""
 
     BASE_URL = "https://www.facturapi.io/"
+    catalogs = Catalogs()
 
     def __init__(self, facturapi_key: str, user_secret_key: str = None) -> None:
         self.customers = CustomersClient(facturapi_key)

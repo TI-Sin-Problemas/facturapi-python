@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Union
 
-from .enums import CancelationReason
+from .enums import CancellationReason
 from .http import BaseClient
 
 
@@ -85,7 +85,7 @@ class InvoicesClient(BaseClient):
     def cancel(
         self,
         invoice_id: str,
-        reason: Union[CancelationReason, str],
+        reason: Union[CancellationReason, str],
         substitution: str = None,
     ) -> dict:
         """Cancels an invoice. The invoice will not be valid anymore and will
@@ -93,7 +93,7 @@ class InvoicesClient(BaseClient):
 
         Args:
             invoice_id (str): Invoice ID to cancel
-            reason (CancelationReason): Reason for cancellation
+            reason (CancellationReason): Reason for cancellation
             substitution (str, optional): Substitute invoice id. Defaults to None.
 
         Returns:
