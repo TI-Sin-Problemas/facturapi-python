@@ -1,4 +1,4 @@
-# FacturAPI Unofficial Python :snake: client
+# FacturAPI Unofficial Python client
 
 This is an unofficial Python wrapper for [FacturAPI](https://facturapi.io/)
 

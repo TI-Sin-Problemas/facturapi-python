@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "facturapi-python"
+version = "0.0.1"
+authors = [
+    { name = "TI Sin Problemas", email = "pypi@tisinproblemas.com" },
+    { name = "Alfredo Altamirano" },
+]
+description = "Unofficial Facturapi.io Python wrapper"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.7"
+keywords = ["cfdi", "factura", "mexico", "sat"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/TI-Sin-Problemas/facturapi-python"
+"Bug Tracker" = "https://github.com/TI-Sin-Problemas/facturapi-python/issues"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["/.github"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/facturapi"]
