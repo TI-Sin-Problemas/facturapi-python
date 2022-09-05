@@ -1,5 +1,8 @@
 """Organizations API endpoint"""
 from datetime import datetime
+from typing import Union
+
+from .enums import ReceiptPeriodicity
 from .http import BaseClient
 
 
@@ -137,4 +140,38 @@ class OrganizationsClient(BaseClient):
             "next_folio_number_test": next_folio_number_test,
             "pdf_extra": pdf_extra,
         }
-        self._execute_request("PUT", url, json_data=data)
+        return self._execute_request("PUT", url, json_data=data)
+
+    def update_receipt_settings(
+        self,
+        organization_id: str,
+        periodicity: Union[ReceiptPeriodicity, str],
+        duration_days: int,
+        next_folio_number: int,
+        next_folio_number_test: int,
+    ) -> dict:
+        """Updates the receipts settings of the organization
+
+        Args:
+            organization_id (str): ID of the organization
+            periodicity (Union[ReceiptPeriodicity, str]): Periodicity with which the company
+            decides to issue a global invoice (to the general public) for all unbilled receipts.
+            This value is used as default when creating a global invoice.
+            duration_days (int): Maximum days to bill through self-invoicing portal after the
+            receipt is issued and before the last day of the period defined by the periodicity
+            attribute. 0 disables this option, making the receipts always expire on the last day
+            of the period
+            next_folio_number (int): Folio number used for the next created receipt on live mode
+            next_folio_number_test (int): Folio number used for the next created receipt on test
+
+        Returns:
+            dict: _description_
+        """
+        url = self._get_request_url([organization_id, "receipts"])
+        data = {
+            "periodicity": periodicity,
+            "duration_days": duration_days,
+            "next_folio_number": next_folio_number,
+            "next_folio_number_test": next_folio_number_test,
+        }
+        return self._execute_request("PUT", url, json_data=data)

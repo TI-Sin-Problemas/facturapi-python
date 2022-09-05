@@ -38,6 +38,16 @@ class CancellationReason(Enum):
     NOMINATIVE_TRANSACTION = "04"
 
 
+class ReceiptPeriodicity(Enum):
+    DAY = "day"
+    WEEK = "week"
+    FORTNIGHT = "fortnight"
+    MONTH = "month"
+    TWO_MONTHS = "two_months"
+
+
 class Catalogs(NamedTuple):
     payment_forms = PaymentForm
     cancellation_reasons = CancellationReason
+
+    receipt_periodicity = ReceiptPeriodicity
