@@ -186,6 +186,20 @@ class OrganizationsClient(BaseClient):
         Returns:
             bool: True if domain is available
         """
-        url = self._get_request_url("domain-check")
+        url = self._get_request_url(["domain-check"])
         response = self._execute_request("GET", url, [domain]).json()
         return response["available"]
+
+    def update_domain(self, organization_id: str, domain: str) -> dict:
+        """Choose the domain that this organization will use on its self-billing microsite.
+        Once you have chosen the domain, you must contact FacturAPI if you need to change it.
+
+        Args:
+            organization_id (str): ID of the organization
+            domain (str): Domain name
+
+        Returns:
+            dict: Updated organization domain
+        """
+        url = self._get_request_url([organization_id, "domain"])
+        return self._execute_request("GET", url, json_data={"domain": domain}).json()
