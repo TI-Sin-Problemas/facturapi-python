@@ -254,6 +254,14 @@ class PerceptionType(Enum):
     PAGOS_POR_JUBILACION_EN_UNA_SOLA_EXHIBICION_DERIVADOS_DE_RESOLUCION_JUDICIAL = "053"
 
 
+class HourType(Enum):
+    """SAT's hour type"""
+
+    DOBLES = "01"
+    TRIPLES = "02"
+    SIMPLES = "03"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -284,6 +292,7 @@ class Catalogs(NamedTuple):
     job_risks = JobRisk
     payment_frequencies = PeymentFrecuency
     perception_types = PerceptionType
+    hour_types = HourType
 
     cancellation_reasons = CancellationReason
 
