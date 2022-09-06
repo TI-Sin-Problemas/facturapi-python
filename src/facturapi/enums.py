@@ -67,6 +67,18 @@ class InvoiceUse(Enum):
     NOMINA = "CN01"
 
 
+class InvoiceRelation(Enum):
+    NOTA_DE_CREDITO = "01"
+    NOTA_DE_DEBITO = "02"
+    DELOVUCION_DE_MERCANCIA = "03"
+    SUSTITUCION_DE_CFDI_PREVIOS = "04"
+    TRASLADOS_DE_MERCANCIA_FACTURADOS_PREVIAMENTE = "05"
+    FACTURA_POR_TRASLADOS_PREVIOS = "06"
+    APLICACION_DE_ANTICIPO = "07"
+    FACTURA_POR_PAGOS_PARCIALIDADES = "08"
+    FACTURA_POR_PAGOS_DIFERIDOS = "09"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -86,6 +98,7 @@ class Catalogs(NamedTuple):
     payment_forms = PaymentForm
     payment_methods = PaymentMethod
     invoice_use = InvoiceUse
+    invoice_relations = InvoiceRelation
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
