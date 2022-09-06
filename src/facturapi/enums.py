@@ -374,6 +374,21 @@ class DeductionType(Enum):
     AJUSTE_AL_SUBSIDIO_CAUSADO = "107"
 
 
+class OtherPaymentType(Enum):
+    """SAT's other payment type"""
+
+    REINTEGRO_DE_ISR_PAGADO_EN_EXCESO = "001"
+    SUBSIDIO_PARA_EL_EMPLEO = "002"
+    VIATICOS = "003"
+    APLICACION_DE_SALDO_A_FAVOR_POR_COMPENSACION_ANUAL = "004"
+    REINTEGRO_DE_ISR_RETENIDO_EN_EXCESO_DE_EJERCICIO_ANTERIOR = "005"
+    ALIMENTOS_EN_BIENES = "006"
+    ISR_AJUSTADO_POR_SUBSIDIO = "007"
+    SUBSIDIO_EFECTIVAMENTE_ENTREGADO_QUE_NO_CORRESPONDIA = "008"
+    REEMBOLSO_DE_DESCUENTOS_EFECTUADOS_PARA_EL_CREDITO_DE_VIVIENDA = "009"
+    PAGOS_DISTINTOS_A_LOS_LISTADOS = "999"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -405,7 +420,8 @@ class Catalogs(NamedTuple):
     payment_frequencies = PeymentFrecuency
     perception_types = PerceptionType
     hour_types = HourType
-    deduction_type = DeductionType
+    deduction_types = DeductionType
+    other_payment_types = OtherPaymentType
 
     cancellation_reasons = CancellationReason
 
