@@ -107,6 +107,29 @@ class TaxSystem(Enum):
     ENAJENACION_ACCIONES_EN_BOLSA_DE_VALORES = "630"
 
 
+class Month(Enum):
+    """Months and bimonths"""
+
+    ENERO = "01"
+    FEBRERO = "02"
+    MARZO = "03"
+    ABRIL = "04"
+    MAYO = "05"
+    JUNIO = "06"
+    JULIO = "07"
+    AGOSTO = "08"
+    SEPTIEMBRE = "09"
+    OCTUBRE = "10"
+    NOVIEMBRE = "11"
+    DICIEMBRE = "12"
+    ENERO_FEBRERO = "13"
+    MARZO_ABRIL = "14"
+    MAYO_JUNIO = "15"
+    JULIO_AGOSTO = "16"
+    SEPTIEMBRE_OCTUBRE = "17"
+    NOVIEMBRE_DICIEMBRE = "18"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -128,6 +151,7 @@ class Catalogs(NamedTuple):
     invoice_use = InvoiceUse
     invoice_relations = InvoiceRelation
     tax_systtems = TaxSystem
+    months = Month
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
