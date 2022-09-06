@@ -31,6 +31,13 @@ class PaymentForm(Enum):
     POR_DEFINIR = "99"
 
 
+class PaymentMethod(Enum):
+    """SAT's payment method"""
+
+    UNA_SOLA_EXHIBICION = "PUE"
+    PARCIALIDADES_DIFERIDO = "PPD"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -48,6 +55,7 @@ class ReceiptPeriodicity(Enum):
 
 class Catalogs(NamedTuple):
     payment_forms = PaymentForm
+    payment_methods = PaymentMethod
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
