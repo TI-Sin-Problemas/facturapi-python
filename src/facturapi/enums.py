@@ -130,6 +130,20 @@ class Month(Enum):
     NOVIEMBRE_DICIEMBRE = "18"
 
 
+class ContractType(Enum):
+    TRABAJO_POR_TIEMPO_INDETERMINADO = "01"
+    TRABAJO_PARA_OBRA_DETERMINADA = "02"
+    TRABAJO_POR_TIEMPO_DETERMINADO = "03"
+    TRABAJO_POR_TEMPORADA = "04"
+    TRABAJO_SUJETO_A_PRUEBA = "05"
+    TRABAJO_CON_CAPACITACION_INICIAL = "06"
+    POR_PAGO_DE_HORA_LABORADA = "07"
+    TRABAJO_POR_COMISION_LABORAL = "08"
+    DONDE_NO_EXISTE_RELACION_DE_TRABAJO = "09"
+    JUBILACION_PENSION_RETIRO = "10"
+    OTRO_CONTRATO = "99"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -152,6 +166,7 @@ class Catalogs(NamedTuple):
     invoice_relations = InvoiceRelation
     tax_systtems = TaxSystem
     months = Month
+    contracts = ContractType
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
