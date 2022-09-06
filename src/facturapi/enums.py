@@ -38,6 +38,35 @@ class PaymentMethod(Enum):
     PARCIALIDADES_DIFERIDO = "PPD"
 
 
+class InvoiceUse(Enum):
+    """SAT's CFDI usage"""
+
+    ADQUISICION_MERCANCIAS = "G01"
+    DEVOLUCIONES_DESCUENTOS_BONIFICACIONES = "G02"
+    GASTOS_EN_GENERAL = "G03"
+    CONSTRUCCIONES = "I01"
+    MOBILIARIO_Y_EQUIPO_DE_OFICINA = "I02"
+    EQUIPO_DE_TRANSPORTE = "I03"
+    EQUIPO_DE_COMPUTO = "I04"
+    DADOS_TROQUELES_HERRAMENTAL = "I05"
+    COMUNICACIONES_TELEFONICAS = "I06"
+    COMUNICACIONES_SATELITALES = "I07"
+    OTRA_MAQUINARIA = "I08"
+    HONORARIOS_MEDICOS = "D01"
+    GASTOS_MEDICOS_POR_INCAPACIDAD = "D02"
+    GASTOS_FUNERALES = "D03"
+    DONATIVOS = "D04"
+    INTERESES_POR_CREDITOS_HIPOTECARIOS = "D05"
+    APORTACIONES_VOLUNTARIAS_SAR = "D06"
+    PRIMA_SEGUROS_GASTOS_MEDICOS = "D07"
+    GASTOS_TRANSPORTACION_ESCOLAR = "D08"
+    CUENTAS_AHORRO_PENSIONES = "D09"
+    SERVICIOS_EDUCATIVOS = "D10"
+    SIN_EFECTOS_FISCALES = "S01"
+    PAGOS = "CP01"
+    NOMINA = "CN01"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -56,6 +85,7 @@ class ReceiptPeriodicity(Enum):
 class Catalogs(NamedTuple):
     payment_forms = PaymentForm
     payment_methods = PaymentMethod
+    invoice_use = InvoiceUse
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
