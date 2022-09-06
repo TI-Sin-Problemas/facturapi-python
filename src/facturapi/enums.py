@@ -189,6 +189,22 @@ class JobRisk(Enum):
     NO_APLICA = "99"
 
 
+class PeymentFrecuency(Enum):
+    """SAT's payment frequency"""
+
+    DIARIO = "01"
+    SEMANAL = "02"
+    CATORCENAL = "03"
+    QUINCENAL = "04"
+    MENSUAL = "05"
+    BIMESTRAL = "06"
+    UNIDAD_OBRA = "07"
+    COMISION = "08"
+    PRECIO_ALZADO = "09"
+    DECENAL = "10"
+    OTRA_PERIODICIDAD = "99"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -215,6 +231,7 @@ class Catalogs(NamedTuple):
     working_day_types = WorkingDayType
     tax_system_types = TaxSystemType
     job_risks = JobRisk
+    payment_frequencies = PeymentFrecuency
 
     cancellation_reasons = CancellationReason
 
