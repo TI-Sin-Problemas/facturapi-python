@@ -160,6 +160,24 @@ class WorkingDayType(Enum):
     OTRA_JORNADA = "99"
 
 
+class TaxSystemType(Enum):
+    """SAT's Tax system type"""
+
+    SUELDOS = "02"
+    JUBILADOS = "03"
+    PENSIONADOS = "04"
+    ASIMILADOS_MIEMBROS_SOCIEDADES_COOPERATIVAS_PRODUCCION = "05"
+    ASIMILADOS_INTEGRANTES_SOCIEDADES_ASOCIACIONES_CIVILES = "06"
+    ASIMILADOS_MIEMBROS_CONSEJOS = "07"
+    ASIMILADOS_COMISIONISTAS = "08"
+    ASIMILADOS_HONORARIOS = "09"
+    ASIMILADOS_ACCIONES = "10"
+    ASIMILADOS_OTROS = "11"
+    JUBILADOS_PENSIONADOS = "12"
+    INDEMNIZACION_SEPARACION = "13"
+    OTRO_REGIMEN = "99"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -180,10 +198,11 @@ class Catalogs(NamedTuple):
     payment_methods = PaymentMethod
     invoice_use = InvoiceUse
     invoice_relations = InvoiceRelation
-    tax_systtems = TaxSystem
+    tax_systems = TaxSystem
     months = Month
-    contracts = ContractType
-    working_days = WorkingDayType
+    contract_types = ContractType
+    working_day_types = WorkingDayType
+    tax_system_types = TaxSystemType
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
