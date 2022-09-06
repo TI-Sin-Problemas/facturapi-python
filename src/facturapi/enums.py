@@ -178,6 +178,17 @@ class TaxSystemType(Enum):
     OTRO_REGIMEN = "99"
 
 
+class JobRisk(Enum):
+    """SAT's Job risk"""
+
+    CLASE_I = "1"
+    CLASE_II = "2"
+    CLASE_III = "3"
+    CLASE_IV = "4"
+    CLASE_V = "5"
+    NO_APLICA = "99"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -203,6 +214,8 @@ class Catalogs(NamedTuple):
     contract_types = ContractType
     working_day_types = WorkingDayType
     tax_system_types = TaxSystemType
+    job_risks = JobRisk
+
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
