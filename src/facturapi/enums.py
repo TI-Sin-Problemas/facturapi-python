@@ -131,6 +131,8 @@ class Month(Enum):
 
 
 class ContractType(Enum):
+    """SAT's Contract type"""
+
     TRABAJO_POR_TIEMPO_INDETERMINADO = "01"
     TRABAJO_PARA_OBRA_DETERMINADA = "02"
     TRABAJO_POR_TIEMPO_DETERMINADO = "03"
@@ -142,6 +144,20 @@ class ContractType(Enum):
     DONDE_NO_EXISTE_RELACION_DE_TRABAJO = "09"
     JUBILACION_PENSION_RETIRO = "10"
     OTRO_CONTRATO = "99"
+
+
+class WorkingDayType(Enum):
+    """SAT's Work day type"""
+
+    DIURNA = "01"
+    NOCTURNA = "02"
+    MIXTA = "03"
+    POR_HORA = "04"
+    REDUCIDA = "05"
+    CONTINUADA = "06"
+    PARTIDA = "07"
+    POR_TURNOS = "08"
+    OTRA_JORNADA = "99"
 
 
 class CancellationReason(Enum):
@@ -167,6 +183,7 @@ class Catalogs(NamedTuple):
     tax_systtems = TaxSystem
     months = Month
     contracts = ContractType
+    working_days = WorkingDayType
     cancellation_reasons = CancellationReason
 
     receipt_periodicity = ReceiptPeriodicity
