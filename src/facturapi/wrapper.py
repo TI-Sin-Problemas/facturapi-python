@@ -1,5 +1,6 @@
 """Facturapi API Client"""
 
+from .catalogs import CatalogsClient
 from .customers import CustomersClient
 from .enums import Catalogs
 from .invoices import InvoicesClient
@@ -35,3 +36,4 @@ class Facturapi:
         self.organizations = OrganizationsClient(facturapi_key)
         self.healthcheck = HealthCheck(facturapi_key)
         self.tools = ToolsClient(facturapi_key)
+        self.catalogs = CatalogsClient(facturapi_key)
