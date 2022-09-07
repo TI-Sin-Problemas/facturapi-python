@@ -430,10 +430,12 @@ class WithholdingKey(Enum):
 
 
 class CancellationReason(Enum):
-    ERRORS_WITH_RELATION = "01"
-    ERRORS_WITHOUT_RELATION = "02"
-    OPERATION_NOT_CARRIED_OUT = "03"
-    NOMINATIVE_TRANSACTION = "04"
+    """SAT's cancellation reason"""
+
+    COMPROBANTE_EMITIDO_CON_ERRORES_CON_RELACION = "01"
+    COMPROBANTE_EMITIDO_CON_ERRORES_SIN_RELACION = "02"
+    NO_SE_LLEVO_A_CABO_LA_OPERACION = "03"
+    OPERACION_NOMINATIVA_RELACIONADA_EN_LA_FACTURA_GLOBAL = "04"
 
 
 class ReceiptPeriodicity(Enum):
@@ -464,7 +466,5 @@ class Catalogs(NamedTuple):
     other_payment_types = OtherPaymentType
     disability_types = DisabilityType
     withholding_keys = WithholdingKey
-
     cancellation_reasons = CancellationReason
-
     receipt_periodicity = ReceiptPeriodicity
