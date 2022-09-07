@@ -37,7 +37,6 @@ class ProductsClient(BaseClient):
             params.update({"q": search})
         if page:
             params.update({"page": page})
-
         if limit:
             params.update({"limit": limit})
 
