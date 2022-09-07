@@ -439,6 +439,8 @@ class CancellationReason(Enum):
 
 
 class ReceiptPeriodicity(Enum):
+    """Receipt periodicity"""
+
     DAY = "day"
     WEEK = "week"
     FORTNIGHT = "fortnight"
