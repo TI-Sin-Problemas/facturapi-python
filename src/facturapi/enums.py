@@ -189,7 +189,7 @@ class JobRisk(Enum):
     NO_APLICA = "99"
 
 
-class PeymentFrecuency(Enum):
+class PaymentFrecuency(Enum):
     """SAT's payment frequency"""
 
     DIARIO = "01"
@@ -389,6 +389,15 @@ class OtherPaymentType(Enum):
     PAGOS_DISTINTOS_A_LOS_LISTADOS = "999"
 
 
+class DisabilityType(Enum):
+    """SAT's disability type"""
+
+    RIESGO_DE_TRABAJO = "01"
+    ENFERMEDAD_EN_GENERAL = "02"
+    MATERNIDAD = "03"
+    LICENCIA_POR_CUIDADOS_MEDICOS_DE_HIJOS_DIAGNOSTICADOS_CON_CANCER = "04"
+
+
 class CancellationReason(Enum):
     ERRORS_WITH_RELATION = "01"
     ERRORS_WITHOUT_RELATION = "02"
@@ -417,11 +426,12 @@ class Catalogs(NamedTuple):
     working_day_types = WorkingDayType
     tax_system_types = TaxSystemType
     job_risks = JobRisk
-    payment_frequencies = PeymentFrecuency
+    payment_frequencies = PaymentFrecuency
     perception_types = PerceptionType
     hour_types = HourType
     deduction_types = DeductionType
     other_payment_types = OtherPaymentType
+    disability_type = DisabilityType
 
     cancellation_reasons = CancellationReason
 
