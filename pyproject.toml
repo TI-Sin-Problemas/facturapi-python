@@ -4,16 +4,18 @@ build-backend = "hatchling.build"
 
 [project]
 name = "facturapi-python"
-version = "0.1.0"
+version = "0.1.1"
 authors = [{ name = "TI Sin Problemas", email = "pypi@tisinproblemas.com" }]
 description = "Unofficial Facturapi.io Python client"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.7"
-dependencies = ["requests>=2.28, <3"]
+requires-python = ">=3.5"
+dependencies = ["requests>=2.20, <3"]
 keywords = ["cfdi", "factura", "mexico", "sat"]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",

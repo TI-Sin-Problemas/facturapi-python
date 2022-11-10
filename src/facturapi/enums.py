@@ -1,7 +1,7 @@
 """Enum constants"""
 
 from enum import Enum
-from typing import NamedTuple
+from collections import namedtuple
 
 
 class PaymentForm(Enum):
@@ -448,25 +448,49 @@ class ReceiptPeriodicity(Enum):
     TWO_MONTHS = "two_months"
 
 
-class Catalogs(NamedTuple):
-    """Catalog codes"""
-
-    payment_forms = PaymentForm
-    payment_methods = PaymentMethod
-    invoice_use = InvoiceUse
-    invoice_relations = InvoiceRelation
-    tax_systems = TaxSystem
-    months = Month
-    contract_types = ContractType
-    working_day_types = WorkingDayType
-    tax_system_types = TaxSystemType
-    job_risks = JobRisk
-    payment_frequencies = PaymentFrecuency
-    perception_types = PerceptionType
-    hour_types = HourType
-    deduction_types = DeductionType
-    other_payment_types = OtherPaymentType
-    disability_types = DisabilityType
-    withholding_keys = WithholdingKey
-    cancellation_reasons = CancellationReason
-    receipt_periodicity = ReceiptPeriodicity
+def Catalogs():
+    catalogs = namedtuple(
+        "Catalogs",
+        [
+            "payment_forms",
+            "payment_methods",
+            "invoice_use",
+            "invoice_relations",
+            "tax_systems",
+            "months",
+            "contract_types",
+            "working_day_types",
+            "tax_system_types",
+            "job_risks",
+            "payment_frequencies",
+            "perception_types",
+            "hour_types",
+            "deduction_types",
+            "other_payment_types",
+            "disability_types",
+            "withholding_keys",
+            "cancellation_reasons",
+            "receipt_periodicity",
+        ],
+    )
+    return catalogs(
+        PaymentForm,
+        PaymentMethod,
+        InvoiceUse,
+        InvoiceRelation,
+        TaxSystem,
+        Month,
+        ContractType,
+        WorkingDayType,
+        TaxSystemType,
+        JobRisk,
+        PaymentFrecuency,
+        PerceptionType,
+        HourType,
+        DeductionType,
+        OtherPaymentType,
+        DisabilityType,
+        WithholdingKey,
+        CancellationReason,
+        ReceiptPeriodicity,
+    )
