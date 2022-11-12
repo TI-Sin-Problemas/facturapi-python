@@ -106,15 +106,17 @@ class BaseClient(ABC):
             raise FacturapiException(message) from error
 
         self.last_status = response.status_code
+        error_status_codes = [
+            self.STATUS_BAD_REQUEST,
+            self.STATUS_INTERNAL_SERVER_ERROR,
+        ]
 
-        if response.status_code == self.STATUS_BAD_REQUEST:
-            raise FacturapiException(response["message"])
+        if response.status_code in error_status_codes:
+            json_response = response.json()
+            raise FacturapiException(json_response["message"])
 
         if response.status_code == self.STATUS_NOT_AUTHENTICATED:
             raise FacturapiException("Wrong API KEY")
-
-        if response.status_code == self.STATUS_INTERNAL_SERVER_ERROR:
-            raise FacturapiException(response["message"])
 
         return response
 
