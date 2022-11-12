@@ -16,6 +16,7 @@ class BaseClient(ABC):
     STATUS_NOT_AUTHENTICATED = 401
     STATUS_NOT_FOUND = 404
     STATUS_CONFLICT = 409
+    STATUS_INTERNAL_SERVER_ERROR = 500
 
     @property
     @abstractmethod
@@ -106,8 +107,14 @@ class BaseClient(ABC):
 
         self.last_status = response.status_code
 
+        if response.status_code == self.STATUS_BAD_REQUEST:
+            raise FacturapiException(response["message"])
+
         if response.status_code == self.STATUS_NOT_AUTHENTICATED:
             raise FacturapiException("Wrong API KEY")
+
+        if response.status_code == self.STATUS_INTERNAL_SERVER_ERROR:
+            raise FacturapiException(response["message"])
 
         return response
 
