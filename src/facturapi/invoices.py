@@ -101,7 +101,9 @@ class InvoicesClient(BaseClient):
         """
         params = {}
         if reason:
-            params.update({"motive": reason.value})
+
+            motive = reason.value if isinstance(reason, CancellationReason) else reason
+            params.update({"motive": motive})
 
         if substitution:
             params.update({"substitution": substitution})

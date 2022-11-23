@@ -108,6 +108,7 @@ class BaseClient(ABC):
         self.last_status = response.status_code
         error_status_codes = [
             self.STATUS_BAD_REQUEST,
+            self.STATUS_NOT_FOUND,
             self.STATUS_INTERNAL_SERVER_ERROR,
         ]
 
