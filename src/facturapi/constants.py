@@ -1,7 +1,6 @@
 """Enum constants"""
 
 from enum import Enum
-from collections import namedtuple
 
 
 class PaymentForm(Enum):
@@ -446,51 +445,3 @@ class ReceiptPeriodicity(Enum):
     FORTNIGHT = "fortnight"
     MONTH = "month"
     TWO_MONTHS = "two_months"
-
-
-def Catalogs():
-    catalogs = namedtuple(
-        "Catalogs",
-        [
-            "payment_forms",
-            "payment_methods",
-            "invoice_use",
-            "invoice_relations",
-            "tax_systems",
-            "months",
-            "contract_types",
-            "working_day_types",
-            "tax_system_types",
-            "job_risks",
-            "payment_frequencies",
-            "perception_types",
-            "hour_types",
-            "deduction_types",
-            "other_payment_types",
-            "disability_types",
-            "withholding_keys",
-            "cancellation_reasons",
-            "receipt_periodicity",
-        ],
-    )
-    return catalogs(
-        PaymentForm,
-        PaymentMethod,
-        InvoiceUse,
-        InvoiceRelation,
-        TaxSystem,
-        Month,
-        ContractType,
-        WorkingDayType,
-        TaxSystemType,
-        JobRisk,
-        PaymentFrecuency,
-        PerceptionType,
-        HourType,
-        DeductionType,
-        OtherPaymentType,
-        DisabilityType,
-        WithholdingKey,
-        CancellationReason,
-        ReceiptPeriodicity,
-    )

@@ -2,7 +2,6 @@
 
 from .catalogs import CatalogsClient
 from .customers import CustomersClient
-from .enums import Catalogs
 from .invoices import InvoicesClient
 from .products import ProductsClient
 from .receipts import ReceiptsClient
@@ -15,7 +14,6 @@ class Facturapi:
     """Facturapi wrapper"""
 
     BASE_URL = "https://www.facturapi.io/"
-    catalogs = Catalogs()
 
     def __repr__(self) -> str:
         return "<{}: {}>".format(self.__class__.__name__, self)
