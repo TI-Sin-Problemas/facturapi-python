@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from .http import BaseClient
+from .models import Address, Customer, build_customer_list
 
 
 class CustomersClient(BaseClient):
@@ -58,7 +59,9 @@ class CustomersClient(BaseClient):
             params.update({"limit": limit})
 
         url = self._get_request_url()
-        return self._execute_request("GET", url, params).json()
+        response = self._execute_request("GET", url, params).json()
+
+        return build_customer_list(response)
 
     def retrieve(self, customer_id: str) -> dict:
         """Retrieves a single customer object
