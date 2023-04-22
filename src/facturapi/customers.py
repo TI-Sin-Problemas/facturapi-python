@@ -119,17 +119,18 @@ class CustomersClient(BaseClient):
 
         return build_customer_list(response)
 
-    def retrieve(self, customer_id: str) -> dict:
+    def retrieve(self, customer_id: str) -> Customer:
         """Retrieves a single customer object
 
         Args:
             customer_id (str): ID of the customer to retrieve
 
         Returns:
-            dict: Customer object
+            Customer: Retrieved customer
         """
         url = self._get_request_url([customer_id])
-        return self._execute_request("GET", url).json()
+        response = self._execute_request("GET", url).json()
+        return build_customer(response)
 
     def update(self, customer_id: str, data: dict) -> dict:
         """Updates a customer object

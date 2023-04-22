@@ -70,3 +70,12 @@ class TestCustomers:
             customer.created_at >= last_year and customer.created_at <= today
             for customer in result
         )
+
+    def test_retrieve_one_customer(self):
+        """Test to retrieve one customer from the API"""
+        customers = self.customers.all()
+        customer_id = customers[0].id
+        result = self.customers.retrieve(customer_id)
+
+        # Check if the retrieved customer is correct
+        assert result.id == customer_id
