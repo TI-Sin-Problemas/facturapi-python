@@ -10,18 +10,31 @@ class TestCustomers:
     """Test case for getting all the customers"""
 
     customers = Facturapi(API_KEY).customers
+    customer_name = "PÚBLICO EN GENERAL"
+    customer_tax_id = "XAXX010101000"
 
     def test_create_customer(self):
         """Test for customer creation"""
+        tax_system = TaxSystem.SIN_OBLIGACIONES_FISCALES
+        zip_code = "03020"
         result = self.customers.create(
-            "PÚBLICO EN GENERAL",
-            "XAXX010101000",
-            TaxSystem.SIN_OBLIGACIONES_FISCALES,
-            "03020",
+            self.customer_name,
+            self.customer_tax_id,
+            tax_system,
+            zip_code,
         )
 
         # Check if the result is a Customer instance
         assert isinstance(result, Customer)
+
+        # Check if customer data is correct
+        assertion_data = [
+            result.legal_name == self.customer_name,
+            result.tax_id == self.customer_tax_id,
+            result.tax_system == tax_system,
+            result.address.zip == zip_code,
+        ]
+        assert all(assertion_data)
 
     def test_get_all_customers(self):
         """Test case for getting all the customers"""

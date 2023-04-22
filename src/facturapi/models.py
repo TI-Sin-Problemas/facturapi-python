@@ -5,6 +5,8 @@ from typing import Iterator, List, NamedTuple
 
 from dateutil.parser import isoparse
 
+from .constants import TaxSystem
+
 
 class Address(NamedTuple):
     """Customer address"""
@@ -28,7 +30,7 @@ class Customer(NamedTuple):
     livemode: bool
     legal_name: str
     tax_id: str
-    tax_system: str
+    tax_system: TaxSystem
     address: Address
     email: str = None
     phone: int = None
@@ -64,18 +66,17 @@ def build_customer(api_response: dict) -> Customer:
     Returns:
         Customer: Customer object
     """
-    customer_kwargs = {
-        "id": api_response.get("id"),
-        "created_at": isoparse(api_response.get("created_at")),
-        "livemode": api_response.get("livemode"),
-        "legal_name": api_response.get("legal_name"),
-        "tax_id": api_response.get("tax_id"),
-        "tax_system": api_response.get("tax_system"),
-        "email": api_response.get("email"),
-        "phone": api_response.get("phone"),
-        "address": Address(**api_response["address"]),
-    }
-    return Customer(**customer_kwargs)
+    return Customer(
+        api_response.get("id"),
+        isoparse(api_response.get("created_at")),
+        api_response.get("livemode"),
+        api_response.get("legal_name"),
+        api_response.get("tax_id"),
+        TaxSystem(api_response["tax_system"]),
+        Address(**api_response["address"]),
+        api_response.get("email"),
+        api_response.get("phone"),
+    )
 
 
 def build_customer_list(api_response: dict) -> CustomerList:
