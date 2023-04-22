@@ -36,7 +36,7 @@ jobs:
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "SUMMARY<<$EOF" >> "$GITHUB_OUTPUT"
           echo "#Pylint Report" >> "$GITHUB_OUTPUT"
-          pylint $(git ls-files '*.py') --output pylint_summary --exit-zero
+          pylint $(git ls-files '*.py') --output pylint_summary --exit-zero --msg-template '{path}:{line}:{column}: {msg_id}: ({symbol}) \n\`\`\`python\n{msg}\n\`\`\`'
           cat pylint_summary >> "$GITHUB_OUTPUT"
           echo "$EOF" >> "$GITHUB_OUTPUT"
           cat pylint_summary >> "$GITHUB_STEP_SUMMARY"
