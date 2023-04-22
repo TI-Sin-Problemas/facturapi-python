@@ -1,4 +1,7 @@
 """Customers endpoint tests"""
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from settings import API_KEY
 
 from facturapi import Facturapi
@@ -48,3 +51,22 @@ class TestCustomers:
 
         # Check if all the items are Customer instances
         assert all(isinstance(customer, Customer) for customer in result)
+
+    def test_search_customers(self):
+        """Test customer search"""
+        result = self.customers.all(search=self.customer_tax_id)
+
+        # Check if “PÚBLICO EN GENERAL” is in the result
+        assert self.customer_tax_id in [customer.tax_id for customer in result]
+
+    def test_search_customers_by_date(self):
+        """Test for customer search by date"""
+        today = datetime.now()
+        last_year = today - relativedelta(years=1)
+        result = self.customers.all(start_date=last_year, end_date=today)
+
+        # Check if all the customers in result where created in date range
+        assert all(
+            customer.created_at >= last_year and customer.created_at <= today
+            for customer in result
+        )
