@@ -79,3 +79,12 @@ class TestCustomers:
 
         # Check if the retrieved customer is correct
         assert result.id == customer_id
+
+    def test_delete_customer(self):
+        """Test to delete a specific client from the API"""
+        self.test_create_customer()
+        result = self.customers.delete(self.customer_id)
+
+        # Check if the result is correct
+        assert isinstance(result, Customer)
+

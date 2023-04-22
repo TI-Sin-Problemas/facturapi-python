@@ -145,17 +145,18 @@ class CustomersClient(BaseClient):
         url = self._get_request_url([customer_id])
         return self._execute_request("PUT", url, json_data=data).json()
 
-    def delete(self, customer_id: str) -> dict:
+    def delete(self, customer_id: str) -> Customer:
         """Delete a customer from your organization
 
         Args:
             customer_id (str): ID of the customer to delete
 
         Returns:
-            dict: Deleted customer object
+            Customer: Deleted customer object
         """
         url = self._get_request_url([customer_id])
-        return self._execute_request("DELETE", url).json()
+        response = self._execute_request("DELETE", url).json()
+        return build_customer(response)
 
     def validate(self, customer_id: str) -> dict:
         """Validate customer's fiscal information
