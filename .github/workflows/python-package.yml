@@ -45,7 +45,7 @@ jobs:
 
       - name: Test with pytest
         env:
-          FACTURAPI_API_KEY: ${{ env.FACTURAPI_API_KEY }}
+          FACTURAPI_API_KEY: ${{ secrets.FACTURAPI_API_KEY }}
           PYTHONPATH: ./src
         run: |
           pytest
