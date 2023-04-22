@@ -27,6 +27,8 @@ class TestCustomers:
             zip_code,
         )
 
+        self.customer_id = result.id
+
         # Check if the result is a Customer instance
         assert isinstance(result, Customer)
 
@@ -88,3 +90,20 @@ class TestCustomers:
         # Check if the result is correct
         assert isinstance(result, Customer)
 
+    def test_update_client(self):
+        """Test to update a specific client from the API"""
+        self.test_create_customer()
+        email = "user@example.com"
+        phone = "5512345678"
+        zip_code = "01234"
+        result = self.customers.update(
+            self.customer_id, email=email, phone=phone, zip_code=zip_code
+        )
+
+        # Check if the result is correct
+        assertions = [
+            result.email == email,
+            result.phone == phone,
+            result.address.zip == zip_code,
+        ]
+        assert all(assertions)

@@ -24,7 +24,7 @@ class CustomersClient(BaseClient):
 
         Args:
             legal_name (str): Company Name of the customer.
-                Whithout the corporate regime (eg: S.A. de C.V)
+                Without the corporate regime (eg: S.A. de C.V)
             tax_id (str): RFC for customers in Mexico. Tax ID Number for foreigners
             tax_system (Union[TaxSystem, str]): Key of the customer's tax regime.
             zip_code (str): Address zip code.
@@ -132,18 +132,65 @@ class CustomersClient(BaseClient):
         response = self._execute_request("GET", url).json()
         return build_customer(response)
 
-    def update(self, customer_id: str, data: dict) -> dict:
-        """Updates a customer object
+    def update(self, customer_id: str, **kwargs) -> Customer:
+        """Updates an existing customer, assiging the values of the arguments sent.
+        Arguments not sent in the request will not be modified.
 
         Args:
             customer_id (str): ID of the customer to update
-            data (dict): Customer's new data
+
+        Kwargs:
+            legal_name (str, optional): Company Name of the customer.
+                Without the corporate regime (eg: S.A de C.V)
+            tax_id (str, optional): RFC for customers in Mexico. Tax ID Number for foreigners
+            tax_system (Union[TaxSystem, str]): Key of the customer's tax regime
+            email (str, optional): Email address to which to send the generated invoices.
+            phone (str, optional): Phone number.
+            zip_code (str): Address zip code.
+            street (str, optional): Address street name.
+            exterior (str, optional): Address exterior number.
+            interior (str, optional): Address interior number.
+            neighborhood (str, optional): Address neighborhood.
+            city (str, optional): Address city.
+            municipality (str, optional): “Municipio” or "Delegación".
+            state (str, optional): If country is "MEX", name of the state. For foreigners,
+                is the state code accodring to ISO 3166-2 standard.
+            country (str, optional): Country code according to ISO 3166-1 alpha-3 standard.
 
         Returns:
-            str: Customer object
+            Customer: Updated customer
         """
+        customer_attrs = ["legal_name", "tax_id", "email", "phone"]
+        data = {k: v for k, v in kwargs.items() if k in customer_attrs}
+
+        tax_system = kwargs.get("tax_system")
+        if tax_system:
+            if isinstance(tax_system, TaxSystem):
+                tax_system = tax_system.value
+            data["tax_system"] = tax_system
+
+        address_attrs = [
+            "street",
+            "exterior",
+            "interior",
+            "neighborhood",
+            "city",
+            "municipality",
+            "state",
+            "country",
+        ]
+        address = {k: v for k, v in kwargs.items() if k in address_attrs}
+
+        zip_code = kwargs.get("zip_code")
+        if zip_code:
+            address["zip"] = zip_code
+
+        if len(address) > 0:
+            data["address"] = address
+
         url = self._get_request_url([customer_id])
-        return self._execute_request("PUT", url, json_data=data).json()
+        response = self._execute_request("PUT", url, json_data=data).json()
+        return build_customer(response)
 
     def delete(self, customer_id: str) -> Customer:
         """Delete a customer from your organization

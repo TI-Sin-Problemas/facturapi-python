@@ -12,10 +12,10 @@ class Address(NamedTuple):
     """Customer address"""
 
     zip: str
-    municipality: str
-    state: str
-    city: str
     country: str
+    municipality: str = None
+    state: str = None
+    city: str = None
     street: str = None
     exterior: int = None
     interior: int = None
