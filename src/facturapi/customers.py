@@ -1,8 +1,10 @@
 """Customer API endpoint"""
 from datetime import datetime
+from typing import Union
 
+from .constants import TaxSystem
 from .http import BaseClient
-from .models import Address, Customer, build_customer_list
+from .models import Customer, CustomerList, build_customer, build_customer_list
 
 
 class CustomersClient(BaseClient):
@@ -10,17 +12,71 @@ class CustomersClient(BaseClient):
 
     endpoint = "customers"
 
-    def create(self, data: dict) -> dict:
-        """Creates a new customer in your organization.
+    def create(
+        self,
+        legal_name: str,
+        tax_id: str,
+        tax_system: Union[TaxSystem, str],
+        zip_code: str,
+        **kwargs
+    ) -> Customer:
+        """Creates a new customer in the organization .
 
         Args:
-            data (dict): Customer details
+            legal_name (str): Company Name of the customer.
+                Whithout the corporate regime (eg: S.A. de C.V)
+            tax_id (str): RFC for customers in Mexico. Tax ID Number for foreigners
+            tax_system (Union[TaxSystem, str]): Key of the customer's tax regime.
+            zip_code (str): Address zip code.
+
+        Kwargs:
+            email (str, optional): Email address to which to send the generated invoices.
+                Defaults to None.
+            phone (str, optional): Phone number. Defaults to None.
+            street (str, optional): Address street name. Defaults to None.
+            exterior (str, optional): Address exterior number. Defaults to None.
+            interior (str, optional): Address interior number. Defaults to None.
+            neighborhood (str, optional): Address neighborhood. Defaults to None.
+            city (str, optional): Address city. Defaults to None.
+            municipality (str, optional): “Municipio” or "Delegación". Defaults to None.
+            state (str, optional): If country is "MEX", name of the state. For foreigners,
+                is the state code accodring to ISO 3166-2 standard. Defaults to None.
+            country (str, optional): Country code according to ISO 3166-1 alpha-3 standard.
+                Defaults to "MEX".
 
         Returns:
-            dict: Created customer object
+            Customer: Created customer
         """
+        address_attrs = [
+            "street",
+            "exterior",
+            "interior",
+            "neighborhood",
+            "city",
+            "municipality",
+            "state",
+            "country",
+        ]
+        address = {
+            "zip": zip_code,
+            **{k: v for k, v in kwargs.items() if k in address_attrs},
+        }
+
+        if isinstance(tax_system, TaxSystem):
+            tax_system = tax_system.value
+
+        customer_attrs = ["email", "phone"]
+        customer_data = {
+            "legal_name": legal_name,
+            "tax_id": tax_id,
+            "tax_system": tax_system,
+            "address": address,
+            **{k: v for k, v in kwargs.items() if k in customer_attrs},
+        }
+
         url = self._get_request_url()
-        return self._execute_request("POST", url, json_data=data).json()
+        response = self._execute_request("POST", url, json_data=customer_data).json()
+        return build_customer(response)
 
     def all(
         self,
@@ -29,7 +85,7 @@ class CustomersClient(BaseClient):
         end_date: datetime = None,
         page: int = None,
         limit: int = None,
-    ) -> dict:
+    ) -> CustomerList:
         """Retrieves a paginated list of customers from your organization
 
         Args:
@@ -40,7 +96,7 @@ class CustomersClient(BaseClient):
             limit (int, optional): Maximum number of results. Defaults to None.
 
         Returns:
-            dict: Response body
+            CustomerList: List-like object containing the customer search results
         """
         params = {}
         if search:

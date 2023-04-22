@@ -52,6 +52,29 @@ class CustomerList(Sequence):
         return self.data.__iter__()
 
 
+def build_customer(api_response: dict) -> Customer:
+    """Build a Customer object from an API response
+
+    Args:
+        api_response (dict): API response
+
+    Returns:
+        Customer: Customer object
+    """
+    customer_kwargs = {
+        "id": api_response.get("id"),
+        "created_at": api_response.get("created_at"),
+        "livemode": api_response.get("livemode"),
+        "legal_name": api_response.get("legal_name"),
+        "tax_id": api_response.get("tax_id"),
+        "tax_system": api_response.get("tax_system"),
+        "email": api_response.get("email"),
+        "phone": api_response.get("phone"),
+        "address": Address(**api_response["address"]),
+    }
+    return Customer(**customer_kwargs)
+
+
 def build_customer_list(api_response: dict) -> CustomerList:
     """Build a CustomerList from an API response
 
@@ -61,21 +84,7 @@ def build_customer_list(api_response: dict) -> CustomerList:
     Returns:
         CustomerList: List of customers
     """
-    customers = []
-    for item in api_response.get("data", []):
-        customer_kwargs = {
-            "id": item.get("id"),
-            "created_at": item.get("created_at"),
-            "livemode": item.get("livemode"),
-            "legal_name": item.get("legal_name"),
-            "tax_id": item.get("tax_id"),
-            "tax_system": item.get("tax_system"),
-            "email": item.get("email"),
-            "phone": item.get("phone"),
-        }
-        address = Address(**item["address"])
-        customers.append(Customer(**customer_kwargs, address=address))
-
+    customers = [build_customer(item) for item in api_response["data"]]
     customer_list_kwargs = {
         "page": api_response.get("page"),
         "total_pages": api_response.get("total_pages"),
