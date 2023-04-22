@@ -1,10 +1,13 @@
 """FacturAPI object models"""
 from collections.abc import Sequence
+from datetime import datetime
 from typing import Iterator, List, NamedTuple
+
+from dateutil.parser import isoparse
 
 
 class Address(NamedTuple):
-    """Address object"""
+    """Customer address"""
 
     zip: str
     municipality: str
@@ -21,7 +24,7 @@ class Customer(NamedTuple):
     """Customer object"""
 
     id: str
-    created_at: str
+    created_at: datetime
     livemode: bool
     legal_name: str
     tax_id: str
@@ -63,7 +66,7 @@ def build_customer(api_response: dict) -> Customer:
     """
     customer_kwargs = {
         "id": api_response.get("id"),
-        "created_at": api_response.get("created_at"),
+        "created_at": isoparse(api_response.get("created_at")),
         "livemode": api_response.get("livemode"),
         "legal_name": api_response.get("legal_name"),
         "tax_id": api_response.get("tax_id"),
