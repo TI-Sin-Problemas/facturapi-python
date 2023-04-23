@@ -110,6 +110,7 @@ class BaseClient(ABC):
             self.STATUS_BAD_REQUEST,
             self.STATUS_NOT_FOUND,
             self.STATUS_INTERNAL_SERVER_ERROR,
+            self.STATUS_CONFLICT,
         ]
 
         if response.status_code in error_status_codes:
