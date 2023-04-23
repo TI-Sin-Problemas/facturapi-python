@@ -78,6 +78,8 @@ class CustomersClient(BaseClient):
         response = self._execute_request("POST", url, json_data=customer_data).json()
         return build_customer(response)
 
+    # pylint: disable=too-many-arguments
+    # All arguments are needed
     def all(
         self,
         search: str = None,
