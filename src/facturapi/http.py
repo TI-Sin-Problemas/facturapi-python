@@ -5,7 +5,7 @@ from requests import Session, Response
 from .exceptions import FacturapiException
 
 
-class BaseClient(ABC):
+class BaseClient(ABC):  # pylint:disable=too-few-public-methods
     """BaseClient class to be inherited by specific clients"""
 
     BASE_URL = "https://www.facturapi.io/"
@@ -65,12 +65,9 @@ class BaseClient(ABC):
         """
         version = self._get_api_version()
         param_string = "/".join(path_params) if path_params else ""
-        return "{url}{api_version}/{endpoint}/{param_string}".format(
-            url=self.BASE_URL,
-            api_version=version,
-            endpoint=self._get_endpoint(),
-            param_string=param_string,
-        )
+        url = self.BASE_URL
+        endpoint = self._get_endpoint()
+        return f"{url}{version}/{endpoint}/{param_string}"
 
     def _execute_request(
         self, method: str, url: str, query_params: dict = None, json_data: dict = None
@@ -96,13 +93,13 @@ class BaseClient(ABC):
         request = method_switch.get(method.upper(), None)
 
         if not request:
-            message = "Method {} not defined".format(method)
+            message = f"Method {method} not defined"
             raise FacturapiException(message)
 
         try:
             response = request[0](url, **request[1])
         except Exception as error:
-            message = "Request error: {}".format(error)
+            message = f"Request error: {error}"
             raise FacturapiException(message) from error
 
         self.last_status = response.status_code
