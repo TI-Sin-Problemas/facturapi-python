@@ -7,6 +7,9 @@ from dateutil.parser import isoparse
 
 from .constants import TaxSystem
 
+# The maximum number of items to display in a CustomerList.__repr__
+REPR_OUTPUT_SIZE = 20
+
 
 class Address(NamedTuple):
     """Customer address"""
@@ -21,6 +24,9 @@ class Address(NamedTuple):
     interior: int = None
     neighborhood: str = None
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self.zip}>"
+
 
 class Customer(NamedTuple):
     """Customer object"""
@@ -34,6 +40,9 @@ class Customer(NamedTuple):
     address: Address
     email: str = None
     phone: int = None
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self.legal_name}>"
 
 
 class CustomerList(Sequence):
@@ -55,6 +64,12 @@ class CustomerList(Sequence):
 
     def __iter__(self) -> Iterator[Customer]:
         return self.data.__iter__()
+
+    def __repr__(self) -> str:
+        data = list(self[: REPR_OUTPUT_SIZE + 1])
+        if len(data) > REPR_OUTPUT_SIZE:
+            data[-1] = "...(remaining elements truncated)..."
+        return f"<{self.__class__.__name__} {data}>"
 
 
 def build_customer(api_response: dict) -> Customer:
