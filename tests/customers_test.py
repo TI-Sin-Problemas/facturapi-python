@@ -1,5 +1,6 @@
 """Customers endpoint tests"""
 from datetime import datetime
+from time import sleep
 
 from dateutil.relativedelta import relativedelta
 from settings import API_KEY
@@ -8,6 +9,8 @@ from facturapi import Facturapi
 from facturapi.constants import TaxSystem
 from facturapi.models import Customer, CustomerList
 
+MAX_RETRIES = 5
+
 
 class TestCustomers:
     """Test case for getting all the customers"""
@@ -15,6 +18,10 @@ class TestCustomers:
     customers = Facturapi(API_KEY).customers
     customer_name = "PÚBLICO EN GENERAL"
     customer_tax_id = "XAXX010101000"
+    customer_id = None
+    search_completed = False
+    retrieve_completed = False
+    update_completed = False
 
     def test_create_customer(self):
         """Test for customer creation"""
@@ -56,7 +63,12 @@ class TestCustomers:
 
     def test_search_customers(self):
         """Test customer search"""
+        retry = 0
+        while not self.customer_id and retry < MAX_RETRIES:
+            sleep(2)
+            retry += 1
         result = self.customers.all(search=self.customer_tax_id)
+        self.search_completed = True
 
         # Check if “PÚBLICO EN GENERAL” is in the result
         assert self.customer_tax_id in [customer.tax_id for customer in result]
@@ -75,16 +87,27 @@ class TestCustomers:
 
     def test_retrieve_one_customer(self):
         """Test to retrieve one customer from the API"""
-        customers = self.customers.all()
-        customer_id = customers[0].id
-        result = self.customers.retrieve(customer_id)
+        retry = 0
+        while not self.customer_id and retry < MAX_RETRIES:
+            sleep(2)
+            retry += 1
+        result = self.customers.retrieve(self.customer_id)
+        self.retrieve_completed = True
 
         # Check if the retrieved customer is correct
-        assert result.id == customer_id
+        assert result.id == self.customer_id
 
     def test_delete_customer(self):
         """Test to delete a specific client from the API"""
-        self.test_create_customer()
+        retry = 0
+        conditions = [
+            self.search_completed,
+            self.retrieve_completed,
+            self.update_completed,
+        ]
+        while not all(conditions) and retry < MAX_RETRIES:
+            sleep(3)
+            retry += 1
         result = self.customers.delete(self.customer_id)
 
         # Check if the result is correct
@@ -92,13 +115,18 @@ class TestCustomers:
 
     def test_update_client(self):
         """Test to update a specific client from the API"""
-        self.test_create_customer()
+        retry = 0
+        while not self.customer_id and retry < MAX_RETRIES:
+            sleep(2)
+            retry += 1
+
         email = "user@example.com"
         phone = "5512345678"
         zip_code = "01234"
         result = self.customers.update(
             self.customer_id, email=email, phone=phone, zip_code=zip_code
         )
+        self.update_completed = True
 
         # Check if the result is correct
         assertions = [
