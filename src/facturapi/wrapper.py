@@ -3,20 +3,20 @@
 from .catalogs import CatalogsClient
 from .customers import CustomersClient
 from .invoices import InvoicesClient
+from .organizations import OrganizationsClient
 from .products import ProductsClient
 from .receipts import ReceiptsClient
 from .retentions import RetentionsClient
-from .organizations import OrganizationsClient
 from .tools import HealthCheck, ToolsClient
 
 
-class Facturapi:
+class Facturapi:  # pylint: disable=too-many-instance-attributes
     """Facturapi wrapper"""
 
     BASE_URL = "https://www.facturapi.io/"
 
     def __repr__(self) -> str:
-        return "<{}: {}>".format(self.__class__.__name__, self)
+        return f"<{self.__class__.__name__}: {self}>"
 
     def __str__(self) -> str:
         healthcheck = self.healthcheck.check_status()
