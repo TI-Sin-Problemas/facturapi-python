@@ -3,8 +3,15 @@ from datetime import datetime
 from typing import Union
 
 from .constants import TaxSystem
+from .exceptions import ValidationError
 from .http import BaseClient
-from .models import Customer, CustomerList, build_customer, build_customer_list
+from .models import (
+    Customer,
+    CustomerList,
+    CustomerValidations,
+    build_customer,
+    build_customer_list,
+)
 
 
 class CustomersClient(BaseClient):
@@ -207,7 +214,7 @@ class CustomersClient(BaseClient):
         response = self._execute_request("DELETE", url).json()
         return build_customer(response)
 
-    def validate(self, customer_id: str) -> dict:
+    def validate(self, customer_id: str, raise_exception: bool = False) -> dict:
         """Validate customer's fiscal information
 
         Args:
@@ -216,5 +223,11 @@ class CustomersClient(BaseClient):
         Returns:
             dict: JSON validation response
         """
+
         url = self._get_request_url([customer_id, "tax-info-validation"])
-        return self._execute_request("GET", url).json()
+        response = self._execute_request("GET", url).json()
+        validations = CustomerValidations(**response)
+        if raise_exception:
+            raise ValidationError(validations.get_messages())
+
+        return validations

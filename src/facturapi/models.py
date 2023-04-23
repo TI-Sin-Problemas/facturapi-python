@@ -72,6 +72,45 @@ class CustomerList(Sequence):
         return f"<{self.__class__.__name__} {data}>"
 
 
+class ValidationError(NamedTuple):
+    """Message for the validation error"""
+
+    path: str
+    message: str
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self.message}>"
+
+
+class CustomerValidations:
+    """Customer validation result"""
+
+    def __init__(self, is_valid, errors) -> None:
+        self.is_valid = is_valid
+        self.errors = [ValidationError(e["path"], e["message"]) for e in errors]
+
+    def __repr__(self) -> str:
+        is_valid = "Valid" if self.is_valid else "Invalid"
+        return f"<{self.__class__.__name__}: {is_valid} {self.errors}>"
+
+    def __getitem__(self, item) -> ValidationError:
+        return self.errors[item]
+
+    def __len__(self) -> int:
+        return len(self.errors)
+
+    def __iter__(self) -> List[ValidationError]:
+        return self.errors.__iter__()
+
+    def get_messages(self) -> str:
+        """Return a string with all the error messages
+
+        Returns:
+            str: Error messages
+        """
+        return "; ".join([e.message for e in self.errors])
+
+
 def build_customer(api_response: dict) -> Customer:
     """Build a Customer object from an API response
 
