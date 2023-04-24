@@ -2,7 +2,6 @@
 
 from .catalogs import CatalogsClient
 from .customers import CustomersClient
-from .enums import Catalogs
 from .invoices import InvoicesClient
 from .organizations import OrganizationsClient
 from .products import ProductsClient
@@ -15,7 +14,6 @@ class Facturapi:  # pylint: disable=too-many-instance-attributes
     """Facturapi wrapper"""
 
     BASE_URL = "https://www.facturapi.io/"
-    catalogs = Catalogs()
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__}: {self}>"

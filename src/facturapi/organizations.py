@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Union
 
-from .enums import ReceiptPeriodicity
+from .constants import ReceiptPeriodicity
 from .http import BaseClient
 
 

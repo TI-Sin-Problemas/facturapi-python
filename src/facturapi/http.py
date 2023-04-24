@@ -107,6 +107,7 @@ class BaseClient(ABC):  # pylint:disable=too-few-public-methods
             self.STATUS_BAD_REQUEST,
             self.STATUS_NOT_FOUND,
             self.STATUS_INTERNAL_SERVER_ERROR,
+            self.STATUS_CONFLICT,
         ]
 
         if response.status_code in error_status_codes:

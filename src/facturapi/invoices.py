@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Union
 
-from .enums import CancellationReason
+from .constants import CancellationReason
 from .http import BaseClient
 
 
@@ -101,7 +101,6 @@ class InvoicesClient(BaseClient):
         """
         params = {}
         if reason:
-
             motive = reason.value if isinstance(reason, CancellationReason) else reason
             params.update({"motive": motive})
 
