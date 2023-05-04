@@ -445,3 +445,35 @@ class ReceiptPeriodicity(Enum):
     FORTNIGHT = "fortnight"
     MONTH = "month"
     TWO_MONTHS = "two_months"
+
+
+class Taxability(Enum):
+    """If goods or services are subject to tax"""
+
+    NOT_SUBJECT_TO_TAX = "01"
+    SUBJECT_TO_TAX = "02"
+    SUBJECT_TO_TAX_BREAKDOWN_NOT_REQUIRED = "03"
+
+
+class TaxType(Enum):
+    """Type of Tax"""
+
+    IVA = "IVA"
+    ISR = "ISR"
+    IEPS = "IEPS"
+
+
+class TaxFactor(Enum):
+    """Tax factor type"""
+
+    RATE = "Tasa"
+    FEE = "Cuota"
+    EXENTO = "Exento"
+
+
+class IEPSMode(Enum):
+    """Way to collect IEPS tax"""
+
+    SUM_BEFORE_TAXES = "sum_before_taxes"
+    BREAK_DOWN = "break_down"
+    UNIT = "unit"

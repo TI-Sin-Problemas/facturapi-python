@@ -5,7 +5,7 @@ from typing import Iterator, List, NamedTuple
 
 from dateutil.parser import isoparse
 
-from .constants import TaxSystem
+from .constants import IEPSMode, Taxability, TaxSystem, TaxType
 
 # The maximum number of items to display in a CustomerList.__repr__
 REPR_OUTPUT_SIZE = 20
@@ -109,6 +109,34 @@ class CustomerValidations:
             str: Error messages
         """
         return "; ".join([e.message for e in self.errors])
+
+
+class ProductTax(NamedTuple):
+    """Tax object of a product"""
+
+    rate: float
+    type: TaxType
+    factor: str
+    withholding: bool
+    ieps_mode: IEPSMode = None
+
+
+class Product(NamedTuple):
+    """Product object"""
+
+    id: str
+    created_at: datetime
+    livemode: bool
+    description: str
+    product_key: str
+    price: float
+    tax_included: bool
+    taxability: Taxability
+    taxes: List[ProductTax]
+    local_taxes: List[ProductTax]
+    unit_key: str
+    unit_name: str
+    sku: str = None
 
 
 def build_customer(api_response: dict) -> Customer:
