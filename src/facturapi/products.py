@@ -96,17 +96,18 @@ class ProductsClient(BaseClient):
         response = self._execute_request("GET", url, params).json()
         return build_product_list(response)
 
-    def retrieve(self, product_id: str) -> dict:
+    def retrieve(self, product_id: str) -> Product:
         """Returns a single product object
 
         Args:
-            product_def retrieve(self, product_id (str): Product ID
+            product_id (str): Product ID
 
         Returns:
-            dict: _description_
+            Product: Retrieved product
         """
         url = self._get_request_url([product_id])
-        return self._execute_request("GET", url).json()
+        response = self._execute_request("GET", url).json()
+        return build_product(response)
 
     def update(self, product_id: str, data: dict) -> dict:
         """Updates an existing product information

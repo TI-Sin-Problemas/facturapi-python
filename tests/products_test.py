@@ -1,4 +1,5 @@
 """Products endpoint tests"""
+import pytest
 from settings import API_KEY
 
 from facturapi import Facturapi
@@ -33,3 +34,11 @@ class TestProducts:
 
         # Check if "Product 1" is in the result
         assert self.product.description in [product.description for product in products]
+
+    @pytest.mark.skipif(not product, reason="Product creation failed")
+    def test_retrieve_one_product(self):
+        """Test get a product"""
+        product = self.api.products.retrieve(self.product.id)
+
+        # Check if the result is a Product instance
+        assert isinstance(product, Product)
