@@ -11,6 +11,33 @@ from .constants import IEPSMode, TaxFactor, Taxability, TaxSystem, TaxType
 REPR_OUTPUT_SIZE = 20
 
 
+class BaseList(Sequence):
+    """Base list class"""
+
+    def __init__(
+        self, page: int, total_pages: int, total_results: int, data: list
+    ) -> None:
+        self.page = page
+        self.total_pages = total_pages
+        self.total_results = total_results
+        self.data = data
+
+    def __getitem__(self, item):
+        return self.data[item]
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __iter__(self) -> Iterator:
+        return self.data.__iter__()
+
+    def __repr__(self) -> str:
+        data = list(self[: REPR_OUTPUT_SIZE + 1])
+        if len(data) > REPR_OUTPUT_SIZE:
+            data[-1] = "...(remaining elements truncated)..."
+        return f"<{self.__class__.__name__} {data}>"
+
+
 class Address(NamedTuple):
     """Customer address"""
 
@@ -45,31 +72,13 @@ class Customer(NamedTuple):
         return f"<{self.__class__.__name__}: {self.legal_name}>"
 
 
-class CustomerList(Sequence):
+class CustomerList(BaseList):
     """Customer list object"""
 
     def __init__(
         self, page: int, total_pages: int, total_results: int, data: List[Customer]
     ) -> None:
-        self.page = page
-        self.total_pages = total_pages
-        self.total_results = total_results
-        self.data = data
-
-    def __getitem__(self, item):
-        return self.data[item]
-
-    def __len__(self) -> int:
-        return len(self.data)
-
-    def __iter__(self) -> Iterator[Customer]:
-        return self.data.__iter__()
-
-    def __repr__(self) -> str:
-        data = list(self[: REPR_OUTPUT_SIZE + 1])
-        if len(data) > REPR_OUTPUT_SIZE:
-            data[-1] = "...(remaining elements truncated)..."
-        return f"<{self.__class__.__name__} {data}>"
+        super().__init__(page, total_pages, total_results, data)
 
 
 class ValidationError(NamedTuple):
@@ -137,6 +146,15 @@ class Product(NamedTuple):
     unit_name: str
     sku: str
     taxability: Taxability = None
+
+
+class ProductList(BaseList):
+    """List of products"""
+
+    def __init__(
+        self, page: int, total_pages: int, total_results: int, data: List[Product]
+    ) -> None:
+        super().__init__(page, total_pages, total_results, data)
 
 
 def build_customer(api_response: dict) -> Customer:
