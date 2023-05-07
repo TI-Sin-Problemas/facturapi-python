@@ -64,3 +64,15 @@ class TestProducts:
             product.sku == sku,
         ]
         assert all(assertions)
+
+    @pytest.mark.skipif(not product, reason="Product creation failed")
+    def test_delete_product(self):
+        """Test product deletion"""
+        product = self.api.products.delete(self.product.id)
+
+        # Check if the result is a Product instance
+        assert isinstance(product, Product)
+
+        # Check if the product was deleted
+        products = self.api.products.all()
+        assert product not in products

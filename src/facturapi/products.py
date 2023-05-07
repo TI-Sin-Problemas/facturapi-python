@@ -166,14 +166,15 @@ class ProductsClient(BaseClient):
         response = self._execute_request("PUT", url, json_data=data).json()
         return build_product(response)
 
-    def delete(self, product_id: str) -> dict:
+    def delete(self, product_id: str) -> Product:
         """Deletes the product from your organization
 
         Args:
             product_id (str): ID of the product to delete
 
         Returns:
-            dict: Deleted product object
+            Product: Deleted product object
         """
         url = self._get_request_url([product_id])
-        return self._execute_request("DELETE", url).json()
+        response = self._execute_request("DELETE", url).json()
+        return build_product(response)
