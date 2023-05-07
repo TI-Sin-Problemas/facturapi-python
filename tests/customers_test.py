@@ -12,7 +12,7 @@ from facturapi.models import Customer, CustomerList
 
 
 class TestCustomers:
-    """Test case for getting all the customers"""
+    """Customers tests group"""
 
     api = Facturapi(API_KEY)
     customer_name = "PÚBLICO EN GENERAL"
