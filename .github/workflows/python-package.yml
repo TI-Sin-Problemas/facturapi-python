@@ -49,6 +49,7 @@ jobs:
           pytest
 
       - name: Generating lint summary comment
+        if: ${{ github.actor != 'dependabot[bot]' }}
         uses: actions/github-script@v6
         with:
           script: |
