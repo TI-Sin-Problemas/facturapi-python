@@ -1,4 +1,7 @@
 """Products endpoint tests"""
+import random
+import string
+
 import pytest
 from settings import API_KEY
 
@@ -42,3 +45,22 @@ class TestProducts:
 
         # Check if the result is a Product instance
         assert isinstance(product, Product)
+
+    @pytest.mark.skipif(not product, reason="Product creation failed")
+    def test_update_product(self):
+        """Test product update"""
+        description = "A new product"
+        price = 200
+        letters = string.ascii_uppercase
+        sku = "".join(random.choice(letters) for i in range(10))
+        product = self.api.products.update(
+            self.product.id, description=description, price=price, sku=sku
+        )
+
+        # Check if the result is correct
+        assertions = [
+            product.description == description,
+            product.price == price,
+            product.sku == sku,
+        ]
+        assert all(assertions)

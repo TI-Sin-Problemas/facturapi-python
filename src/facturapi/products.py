@@ -30,8 +30,8 @@ class ProductsClient(BaseClient):
             price (Union[int, float]): Price per unit of the good or service.\n
             tax_included (bool, optional): True if all applicable taxes are included in the price.
                 False if price does not include taxes. Defaults to True.\n
-            taxes (List[dict]): List of taxes to apply to the product. If None, default taxes will
-                apply. If empty list (`[]`) product is tax exempt.
+            taxes (List[dict], optional): List of taxes to apply to the product.
+                If None, default taxes will apply. If empty list (`[]`) product is tax exempt.
                 Default:
                 ```
                 [{
@@ -109,18 +109,62 @@ class ProductsClient(BaseClient):
         response = self._execute_request("GET", url).json()
         return build_product(response)
 
-    def update(self, product_id: str, data: dict) -> dict:
-        """Updates an existing product information
+    def update(self, product_id: str, **kwargs) -> Product:
+        """Updates an existing product
+
+        Updates the information of an existing product.
+        Arguments not declared will not be modified.
 
         Args:
-            product_id (str): ID of the product to update
-            data (dict): Product's new data to
+            product_id (str): ID of the product to update.
+            **kwargs: Keyword arguments containing product data to update.
+                description: Description of the good or service as it will appear on the invoice.
+                product_key: Product/service key, from the SAT catalog.
+                price: Price per unit of the good or service.
+                tax_included: True if taxes are included in the price, False otherwise.
+                taxability: Code representing whether the good or service is subject to tax or not.
+                taxes: List of taxes to apply to the product.
+                    If empty list (`[]`) product is tax exempt.
+                    Example:
+                    ```
+                    [{
+                        "rate": 0.16,
+                        "type": "IVA",
+                        "factor": "Tasa",
+                        "withholding": False
+                    }]
+                    ```
+                unit_key: Unit of measure key, from the SAT catalog
+                unit_name: Word that represents the unit of measurement of your product.
+                    Must be related to `unit_key`.
+                sku: Identifier for internal use designated by the company.
 
         Returns:
-            dict: Updated product object
+            Product: Updated product object
         """
+        allowed_args = [
+            "description",
+            "product_key",
+            "price",
+            "tax_included",
+            "unit_key",
+            "sku",
+        ]
+        data = {k: v for k, v in kwargs.items() if k in allowed_args}
+
+        taxes = kwargs.get("taxes")
+        if taxes is not None:
+            data.update({"taxes": taxes})
+
+        taxability = kwargs.get("taxability")
+        if isinstance(taxability, Taxability):
+            taxability = taxability.value
+        if taxability:
+            data.update({"taxability": taxability})
+
         url = self._get_request_url([product_id])
-        return self._execute_request("PUT", url, json_data=data).json()
+        response = self._execute_request("PUT", url, json_data=data).json()
+        return build_product(response)
 
     def delete(self, product_id: str) -> dict:
         """Deletes the product from your organization
