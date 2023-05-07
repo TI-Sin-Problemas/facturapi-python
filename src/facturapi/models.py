@@ -222,7 +222,7 @@ def build_product(api_response: dict) -> Product:
 
     return Product(
         api_response.get("id"),
-        api_response.get("created_at"),
+        isoparse(api_response.get("created_at")),
         api_response.get("livemode"),
         api_response.get("description"),
         api_response.get("product_key"),
