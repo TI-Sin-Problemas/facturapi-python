@@ -1,7 +1,7 @@
 """FacturAPI object models"""
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Iterator, List, NamedTuple
+from typing import Iterator, List, NamedTuple, Type
 
 from dateutil.parser import isoparse
 
@@ -157,6 +157,27 @@ class ProductList(BaseList):
         super().__init__(page, total_pages, total_results, data)
 
 
+def build_item_list(api_response: dict, list_class: Type[BaseList]) -> Type[BaseList]:
+    """Build a “ItemList” object from the API response.
+
+    Args:
+        api_response (dict): API response
+        list_class (Type[BaseList]): List class to build
+
+    Returns:
+        Type[BaseList]: Item list object instance
+    """
+    build_function_map = {CustomerList: build_customer, ProductList: build_product}
+    data = [build_function_map[list_class](item) for item in api_response["data"]]
+    list_kwargs = {
+        "page": api_response.get("page"),
+        "total_pages": api_response.get("total_pages"),
+        "total_results": api_response.get("total_results"),
+        "data": data,
+    }
+    return list_class(**list_kwargs)
+
+
 def build_customer(api_response: dict) -> Customer:
     """Build a Customer object from an API response
 
@@ -188,14 +209,7 @@ def build_customer_list(api_response: dict) -> CustomerList:
     Returns:
         CustomerList: List of customers
     """
-    customers = [build_customer(item) for item in api_response["data"]]
-    customer_list_kwargs = {
-        "page": api_response.get("page"),
-        "total_pages": api_response.get("total_pages"),
-        "total_results": api_response.get("total_results"),
-        "data": customers,
-    }
-    return CustomerList(**customer_list_kwargs)
+    return build_item_list(api_response, CustomerList)
 
 
 def build_product(api_response: dict) -> Product:
@@ -235,3 +249,15 @@ def build_product(api_response: dict) -> Product:
         api_response.get("sku"),
         Taxability(taxability) if taxability else None,
     )
+
+
+def build_product_list(api_response: dict) -> ProductList:
+    """Build a ProductList object from an API response
+
+    Args:
+        api_response (dict): API response
+
+    Returns:
+        ProductList: List of products
+    """
+    return build_item_list(api_response, ProductList)

@@ -3,7 +3,7 @@ from typing import List, Union
 
 from .constants import Taxability
 from .http import BaseClient
-from .models import Product, build_product
+from .models import Product, ProductList, build_product, build_product_list
 
 
 class ProductsClient(BaseClient):
@@ -75,7 +75,9 @@ class ProductsClient(BaseClient):
         response = self._execute_request("POST", url, json_data=data).json()
         return build_product(response)
 
-    def all(self, search: str = None, page: int = None, limit: int = None) -> dict:
+    def all(
+        self, search: str = None, page: int = None, limit: int = None
+    ) -> ProductList:
         """Returns a paginated list of all products of an organization or search by parameters
         recieved
 
@@ -86,18 +88,13 @@ class ProductsClient(BaseClient):
             limit (int, optional): Number of maximum quantity of results. Defaults to None.
 
         Returns:
-            dict: Response data
+            ProductList: List-like object containing the product search results
         """
-        params = {}
-        if search:
-            params.update({"q": search})
-        if page:
-            params.update({"page": page})
-        if limit:
-            params.update({"limit": limit})
-
+        kwargs = {"q": search, "page": page, "limit": limit}
+        params = {k: v for k, v in kwargs.items() if v}
         url = self._get_request_url()
-        return self._execute_request("GET", url, params).json()
+        response = self._execute_request("GET", url, params).json()
+        return build_product_list(response)
 
     def retrieve(self, product_id: str) -> dict:
         """Returns a single product object
