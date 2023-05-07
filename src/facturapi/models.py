@@ -5,7 +5,7 @@ from typing import Iterator, List, NamedTuple
 
 from dateutil.parser import isoparse
 
-from .constants import IEPSMode, Taxability, TaxSystem, TaxType
+from .constants import IEPSMode, TaxFactor, Taxability, TaxSystem, TaxType
 
 # The maximum number of items to display in a CustomerList.__repr__
 REPR_OUTPUT_SIZE = 20
@@ -115,9 +115,9 @@ class ProductTax(NamedTuple):
     """Tax object of a product"""
 
     rate: float
-    type: TaxType
-    factor: str
-    withholding: bool
+    type: TaxType = None
+    factor: TaxFactor = None
+    withholding: bool = False
     ieps_mode: IEPSMode = None
 
 
@@ -131,12 +131,12 @@ class Product(NamedTuple):
     product_key: str
     price: float
     tax_included: bool
-    taxability: Taxability
     taxes: List[ProductTax]
     local_taxes: List[ProductTax]
     unit_key: str
     unit_name: str
-    sku: str = None
+    sku: str
+    taxability: Taxability = None
 
 
 def build_customer(api_response: dict) -> Customer:
@@ -178,3 +178,42 @@ def build_customer_list(api_response: dict) -> CustomerList:
         "data": customers,
     }
     return CustomerList(**customer_list_kwargs)
+
+
+def build_product(api_response: dict) -> Product:
+    """Build a Product object from an API response
+
+    Args:
+        api_response (dict): API response
+
+    Returns:
+        Product: Product object
+    """
+
+    taxability = api_response.get("taxability")
+    taxes = api_response["taxes"]
+
+    product_taxes = []
+    for tax in taxes:
+        tax_type = TaxType(tax["type"])
+        factor = TaxFactor(tax["factor"])
+        ieps_mode = IEPSMode(tax["ieps_mode"])
+        product_taxes.append(
+            ProductTax(tax["rate"], tax_type, factor, tax["withholding"], ieps_mode)
+        )
+
+    return Product(
+        api_response.get("id"),
+        api_response.get("created_at"),
+        api_response.get("livemode"),
+        api_response.get("description"),
+        api_response.get("product_key"),
+        api_response.get("price"),
+        api_response.get("tax_included"),
+        product_taxes,
+        api_response.get("local_taxes", []),
+        api_response.get("unit_key"),
+        api_response.get("unit_name"),
+        api_response.get("sku"),
+        Taxability(taxability) if taxability else None,
+    )
