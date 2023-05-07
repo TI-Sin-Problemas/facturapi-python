@@ -33,9 +33,10 @@ class BaseList(Sequence):
 
     def __repr__(self) -> str:
         data = list(self[: REPR_OUTPUT_SIZE + 1])
-        if len(data) > REPR_OUTPUT_SIZE:
+        qty = len(data)
+        if qty > REPR_OUTPUT_SIZE:
             data[-1] = "...(remaining elements truncated)..."
-        return f"<{self.__class__.__name__} {data}>"
+        return f"<{self.__class__.__name__} {data} Total: {qty}>"
 
 
 class Address(NamedTuple):
@@ -69,7 +70,10 @@ class Customer(NamedTuple):
     phone: int = None
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__}: {self.legal_name}>"
+        return f"<{self.__class__.__name__}: {self}>"
+
+    def __str__(self) -> str:
+        return self.legal_name
 
 
 class CustomerList(BaseList):
@@ -146,6 +150,12 @@ class Product(NamedTuple):
     unit_name: str
     sku: str
     taxability: Taxability = None
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self}>"
+
+    def __str__(self) -> str:
+        return self.description
 
 
 class ProductList(BaseList):
