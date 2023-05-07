@@ -1,14 +1,42 @@
 """FacturAPI object models"""
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Iterator, List, NamedTuple
+from typing import Iterator, List, NamedTuple, Type
 
 from dateutil.parser import isoparse
 
-from .constants import TaxSystem
+from .constants import IEPSMode, TaxFactor, Taxability, TaxSystem, TaxType
 
 # The maximum number of items to display in a CustomerList.__repr__
 REPR_OUTPUT_SIZE = 20
+
+
+class BaseList(Sequence):
+    """Base list class"""
+
+    def __init__(
+        self, page: int, total_pages: int, total_results: int, data: list
+    ) -> None:
+        self.page = page
+        self.total_pages = total_pages
+        self.total_results = total_results
+        self.data = data
+
+    def __getitem__(self, item):
+        return self.data[item]
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __iter__(self) -> Iterator:
+        return self.data.__iter__()
+
+    def __repr__(self) -> str:
+        data = list(self[: REPR_OUTPUT_SIZE + 1])
+        qty = len(data)
+        if qty > REPR_OUTPUT_SIZE:
+            data[-1] = "...(remaining elements truncated)..."
+        return f"<{self.__class__.__name__} {data} Total: {qty}>"
 
 
 class Address(NamedTuple):
@@ -42,34 +70,19 @@ class Customer(NamedTuple):
     phone: int = None
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__}: {self.legal_name}>"
+        return f"<{self.__class__.__name__}: {self}>"
+
+    def __str__(self) -> str:
+        return self.legal_name
 
 
-class CustomerList(Sequence):
+class CustomerList(BaseList):
     """Customer list object"""
 
     def __init__(
         self, page: int, total_pages: int, total_results: int, data: List[Customer]
     ) -> None:
-        self.page = page
-        self.total_pages = total_pages
-        self.total_results = total_results
-        self.data = data
-
-    def __getitem__(self, item):
-        return self.data[item]
-
-    def __len__(self) -> int:
-        return len(self.data)
-
-    def __iter__(self) -> Iterator[Customer]:
-        return self.data.__iter__()
-
-    def __repr__(self) -> str:
-        data = list(self[: REPR_OUTPUT_SIZE + 1])
-        if len(data) > REPR_OUTPUT_SIZE:
-            data[-1] = "...(remaining elements truncated)..."
-        return f"<{self.__class__.__name__} {data}>"
+        super().__init__(page, total_pages, total_results, data)
 
 
 class ValidationError(NamedTuple):
@@ -111,6 +124,70 @@ class CustomerValidations:
         return "; ".join([e.message for e in self.errors])
 
 
+class ProductTax(NamedTuple):
+    """Tax object of a product"""
+
+    rate: float
+    type: TaxType = None
+    factor: TaxFactor = None
+    withholding: bool = False
+    ieps_mode: IEPSMode = None
+
+
+class Product(NamedTuple):
+    """Product object"""
+
+    id: str
+    created_at: datetime
+    livemode: bool
+    description: str
+    product_key: str
+    price: float
+    tax_included: bool
+    taxes: List[ProductTax]
+    local_taxes: List[ProductTax]
+    unit_key: str
+    unit_name: str
+    sku: str
+    taxability: Taxability = None
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self}>"
+
+    def __str__(self) -> str:
+        return self.description
+
+
+class ProductList(BaseList):
+    """List of products"""
+
+    def __init__(
+        self, page: int, total_pages: int, total_results: int, data: List[Product]
+    ) -> None:
+        super().__init__(page, total_pages, total_results, data)
+
+
+def build_item_list(api_response: dict, list_class: Type[BaseList]) -> Type[BaseList]:
+    """Build a “ItemList” object from the API response.
+
+    Args:
+        api_response (dict): API response
+        list_class (Type[BaseList]): List class to build
+
+    Returns:
+        Type[BaseList]: Item list object instance
+    """
+    build_function_map = {CustomerList: build_customer, ProductList: build_product}
+    data = [build_function_map[list_class](item) for item in api_response["data"]]
+    list_kwargs = {
+        "page": api_response.get("page"),
+        "total_pages": api_response.get("total_pages"),
+        "total_results": api_response.get("total_results"),
+        "data": data,
+    }
+    return list_class(**list_kwargs)
+
+
 def build_customer(api_response: dict) -> Customer:
     """Build a Customer object from an API response
 
@@ -142,11 +219,55 @@ def build_customer_list(api_response: dict) -> CustomerList:
     Returns:
         CustomerList: List of customers
     """
-    customers = [build_customer(item) for item in api_response["data"]]
-    customer_list_kwargs = {
-        "page": api_response.get("page"),
-        "total_pages": api_response.get("total_pages"),
-        "total_results": api_response.get("total_results"),
-        "data": customers,
-    }
-    return CustomerList(**customer_list_kwargs)
+    return build_item_list(api_response, CustomerList)
+
+
+def build_product(api_response: dict) -> Product:
+    """Build a Product object from an API response
+
+    Args:
+        api_response (dict): API response
+
+    Returns:
+        Product: Product object
+    """
+
+    taxability = api_response.get("taxability")
+    taxes = api_response["taxes"]
+
+    product_taxes = []
+    for tax in taxes:
+        tax_type = TaxType(tax["type"])
+        factor = TaxFactor(tax["factor"])
+        ieps_mode = IEPSMode(tax["ieps_mode"])
+        product_taxes.append(
+            ProductTax(tax["rate"], tax_type, factor, tax["withholding"], ieps_mode)
+        )
+
+    return Product(
+        api_response.get("id"),
+        isoparse(api_response.get("created_at")),
+        api_response.get("livemode"),
+        api_response.get("description"),
+        api_response.get("product_key"),
+        api_response.get("price"),
+        api_response.get("tax_included"),
+        product_taxes,
+        api_response.get("local_taxes", []),
+        api_response.get("unit_key"),
+        api_response.get("unit_name"),
+        api_response.get("sku"),
+        Taxability(taxability) if taxability else None,
+    )
+
+
+def build_product_list(api_response: dict) -> ProductList:
+    """Build a ProductList object from an API response
+
+    Args:
+        api_response (dict): API response
+
+    Returns:
+        ProductList: List of products
+    """
+    return build_item_list(api_response, ProductList)
