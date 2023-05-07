@@ -1,5 +1,9 @@
 """Products API endpoint"""
+from typing import List, Union
+
+from .constants import Taxability
 from .http import BaseClient
+from .models import Product, build_product
 
 
 class ProductsClient(BaseClient):
@@ -7,17 +11,69 @@ class ProductsClient(BaseClient):
 
     endpoint = "products"
 
-    def create(self, data: dict) -> dict:
-        """Creates a new product or service in your catalog
+    def create(  # pylint: disable=too-many-arguments
+        self,
+        description: str,
+        product_key: str,
+        price: Union[int, float],
+        tax_included: bool = True,
+        taxes: List[dict] = None,
+        unit_key: str = "H87",
+        **kwargs,
+    ) -> Product:
+        """Creates a new product or service in your Facturapi catalog
 
         Args:
-            data (dict): Product JSON data
+            description (str): Description of the good or service as it will appear on the
+                invoice.\n
+            product_key (str): Product/service key, from the SAT catalog.\n
+            price (Union[int, float]): Price per unit of the good or service.\n
+            tax_included (bool, optional): True if all applicable taxes are included in the price.
+                False if price does not include taxes. Defaults to True.\n
+            taxes (List[dict]): List of taxes to apply to the product. If None, default taxes will
+                apply. If empty list (`[]`) product is tax exempt.
+                Default:
+                ```
+                [{
+                    "rate": 0.16,
+                    "type": "IVA",
+                    "factor": "Tasa",
+                    "withholding": False
+                }]
+                ```\n
+            unit_key (str, optional): Unit of measure key, from the SAT catalog. Defaults to "H87".
+            **kwargs:
+                taxability (Union[Taxability, str], optional): Represents whether the good or
+                    service is subject to tax or not. Defaults to None.\n
+                unit_name (str, optional): Word that represents the unit of measurement of you
+                    product. Must be related to the unit key unit_key. Defaults to None.\n
+                sku (str, optional): Identifier for internal use designated by the company.
+                    Defaults to None.\n
 
         Returns:
-            dict: Created product
+            Product: Created product
         """
+        data = {
+            "description": description,
+            "product_key": product_key,
+            "price": price,
+            "tax_included": tax_included,
+            "unit_key": unit_key,
+            **{k: v for k, v in kwargs.items() if k in ["unit_name", "sku"]},
+        }
+
+        if taxes is not None:
+            data.update({"taxes": taxes})
+
+        taxability = kwargs.get("taxability")
+        if isinstance(taxability, Taxability):
+            taxability = taxability.value
+        if taxability:
+            data.update({"taxability": taxability})
+
         url = self._get_request_url()
-        return self._execute_request("POST", url, json_data=data).json()
+        response = self._execute_request("POST", url, json_data=data).json()
+        return build_product(response)
 
     def all(self, search: str = None, page: int = None, limit: int = None) -> dict:
         """Returns a paginated list of all products of an organization or search by parameters
