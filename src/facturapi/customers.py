@@ -107,22 +107,14 @@ class CustomersClient(BaseClient):
         Returns:
             CustomerList: List-like object containing the customer search results
         """
-        params = {}
-        if search:
-            params.update({"q": search})
-
-        if start_date:
-            params.update({"date[gt]": start_date.astimezone().isoformat()})
-
-        if end_date:
-            params.update({"date[lt]": end_date.astimezone().isoformat()})
-
-        if page:
-            params.update({"page": page})
-
-        if limit:
-            params.update({"limit": limit})
-
+        kwargs = {
+            "q": search,
+            "date[gt]": start_date.astimezone().isoformat() if start_date else None,
+            "date[lt]": end_date.astimezone().isoformat() if end_date else None,
+            "page": page,
+            "limit": limit,
+        }
+        params = {k: v for k, v in kwargs.items() if v}
         url = self._get_request_url()
         response = self._execute_request("GET", url, params).json()
 
