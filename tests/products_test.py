@@ -2,7 +2,7 @@
 from settings import API_KEY
 
 from facturapi import Facturapi
-from facturapi.models import Product
+from facturapi.models import Product, ProductList
 
 
 class TestProducts:
@@ -19,8 +19,6 @@ class TestProducts:
 
     def test_get_all_products(self):
         """Test get all products"""
-
-        # Get all products
         products = self.api.products.all()
 
         # Check if the result is a ProductList instance
@@ -29,3 +27,9 @@ class TestProducts:
         # Check if all the items are Product instances
         assert all(isinstance(product, Product) for product in products)
 
+    def test_search_products(self):
+        """Test product search"""
+        products = self.api.products.all(search=self.product.description)
+
+        # Check if "Product 1" is in the result
+        assert self.product.description in [product.description for product in products]
